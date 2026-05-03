@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 const DATA_PATH = new URL("./data.json", import.meta.url);
 const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
+const GRID_CSV_PATH = new URL("./contribution-grid.csv", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
 const commands = [
@@ -15,6 +16,7 @@ const commands = [
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
   "node index.js --export-csv      Export activity entries to CSV",
+  "node index.js --grid-csv        Export local grid boxes to CSV",
   "node index.js --grid-stats      Show local grid totals",
   "node index.js --help            Show this help",
 ];
@@ -208,6 +210,19 @@ if (args.includes("--grid-stats")) {
   console.log(`Grid boxes: ${grid.length}`);
   console.log(`Grid total: ${total}`);
   console.log(`Grid average: ${average.toFixed(2)}`);
+  process.exit(0);
+}
+
+if (args.includes("--grid-csv")) {
+  const grid = await readGrid();
+  const rows = ["week,day,date,count"];
+
+  for (const box of grid) {
+    rows.push(`${box.week},${box.day},${box.date},${box.count}`);
+  }
+
+  await writeFile(GRID_CSV_PATH, `${rows.join("\n")}\n`);
+  console.log(`Exported ${grid.length} grid boxes to contribution-grid.csv`);
   process.exit(0);
 }
 
