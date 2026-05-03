@@ -2,6 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const DATA_PATH = new URL("./data.json", import.meta.url);
 const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
+const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
 const args = process.argv.slice(2);
 
 function printHelp() {
@@ -12,6 +13,7 @@ Commands:
   npm run generate-grid           Create a local random contribution grid
   node index.js --check           Validate the activity log
   node index.js --stats           Show activity totals
+  node index.js --export-csv      Export activity entries to CSV
   node index.js --help            Show this help
 `);
 }
@@ -110,6 +112,20 @@ if (args.includes("--stats")) {
   console.log(`Entries: ${entries.length}`);
   console.log(`Active days: ${days.size}`);
   console.log(`Latest entry: ${latest}`);
+  process.exit(0);
+}
+
+if (args.includes("--export-csv")) {
+  const entries = await readEntries();
+  const rows = ["id,date,message"];
+
+  for (const entry of entries) {
+    const message = String(entry.message ?? "").replaceAll('"', '""');
+    rows.push(`${entry.id ?? ""},${entry.date},"${message}"`);
+  }
+
+  await writeFile(CSV_PATH, `${rows.join("\n")}\n`);
+  console.log(`Exported ${entries.length} entries to activity-log.csv`);
   process.exit(0);
 }
 
