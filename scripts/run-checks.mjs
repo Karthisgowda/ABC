@@ -12,8 +12,10 @@ function run(args) {
 const checks = [
   { args: ["--check"], expected: "Activity log is valid" },
   { args: ["--stats"], expected: "Entries:" },
+  { args: ["--days"], expected: "No activity days found." },
   { args: ["--today"], expected: "Entries today:" },
   { args: ["--grid-stats"], expected: "Grid boxes:" },
+  { args: ["--version"], expected: "1.0.0" },
   { args: ["--help"], expected: "ABC activity logger" },
 ];
 
