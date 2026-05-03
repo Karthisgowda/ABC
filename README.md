@@ -29,10 +29,28 @@ View activity totals:
 npm run stats
 ```
 
+Show only today's activity:
+
+```bash
+npm run today
+```
+
+List entries:
+
+```bash
+npm run list
+```
+
 Export the log:
 
 ```bash
 npm run export-csv
+```
+
+Export a summary file:
+
+```bash
+npm run summary-json
 ```
 
 The script appends the current timestamp and message to `data.json`. Commit and push your real project changes normally:
@@ -61,6 +79,19 @@ Review the generated grid totals:
 
 ```bash
 npm run grid-stats
+```
+
+Export generated grid reports:
+
+```bash
+npm run grid-csv
+npm run grid-markdown
+```
+
+Run checks:
+
+```bash
+npm test
 ```
 
 ## Note
