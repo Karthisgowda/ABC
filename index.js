@@ -4,18 +4,21 @@ const DATA_PATH = new URL("./data.json", import.meta.url);
 const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
 const args = process.argv.slice(2);
+const commands = [
+  'npm run log -- "message"        Add a current-time activity entry',
+  "npm run generate-grid           Create a local random contribution grid",
+  "node index.js --check           Validate the activity log",
+  "node index.js --stats           Show activity totals",
+  "node index.js --export-csv      Export activity entries to CSV",
+  "node index.js --grid-stats      Show local grid totals",
+  "node index.js --help            Show this help",
+];
 
 function printHelp() {
   console.log(`ABC activity logger
 
 Commands:
-  npm run log -- "message"        Add a current-time activity entry
-  npm run generate-grid           Create a local random contribution grid
-  node index.js --check           Validate the activity log
-  node index.js --stats           Show activity totals
-  node index.js --export-csv      Export activity entries to CSV
-  node index.js --grid-stats      Show local grid totals
-  node index.js --help            Show this help
+  ${commands.join("\n  ")}
 `);
 }
 
