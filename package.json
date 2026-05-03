@@ -7,9 +7,14 @@
   "scripts": {
     "export-csv": "node index.js --export-csv",
     "generate-grid": "node index.js --generate-grid",
+    "grid-csv": "node index.js --grid-csv",
+    "grid-markdown": "node index.js --grid-markdown",
     "grid-stats": "node index.js --grid-stats",
+    "list": "node index.js --list",
     "log": "node index.js",
+    "summary-json": "node index.js --summary-json",
     "stats": "node index.js --stats",
+    "today": "node index.js --today",
     "test": "node index.js --check"
   },
   "keywords": [
