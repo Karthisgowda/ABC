@@ -8,6 +8,7 @@ const commands = [
   'npm run log -- "message"        Add a current-time activity entry',
   "npm run generate-grid           Create a local random contribution grid",
   "node index.js --check           Validate the activity log",
+  "node index.js --list            Print activity entries",
   "node index.js --stats           Show activity totals",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --grid-stats      Show local grid totals",
@@ -125,6 +126,21 @@ if (args.includes("--check")) {
   }
 
   console.log(`Activity log is valid. Entries: ${entries.length}`);
+  process.exit(0);
+}
+
+if (args.includes("--list")) {
+  const entries = await readEntries();
+
+  if (entries.length === 0) {
+    console.log("No activity entries found.");
+    process.exit(0);
+  }
+
+  for (const entry of entries) {
+    console.log(`${entry.date}  ${entry.message}`);
+  }
+
   process.exit(0);
 }
 
