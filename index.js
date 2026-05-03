@@ -8,6 +8,10 @@ const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
 const APP_VERSION = "1.0.0";
+const DEFAULT_GRID_WEEKS = 53;
+const DEFAULT_GRID_DAYS = 7;
+const DEFAULT_GRID_MIN = 2;
+const DEFAULT_GRID_MAX = 4;
 const commands = [
   'npm run log -- "message"        Add a current-time activity entry',
   "npm run generate-grid           Create a local random contribution grid",
@@ -107,10 +111,10 @@ function buildContributionGrid({ weeks, days, min, max }) {
 }
 
 if (args.includes("--generate-grid")) {
-  const min = readNumberFlag("min", 2);
-  const max = readNumberFlag("max", 4);
-  const weeks = readNumberFlag("weeks", 53);
-  const days = readNumberFlag("days", 7);
+  const min = readNumberFlag("min", DEFAULT_GRID_MIN);
+  const max = readNumberFlag("max", DEFAULT_GRID_MAX);
+  const weeks = readNumberFlag("weeks", DEFAULT_GRID_WEEKS);
+  const days = readNumberFlag("days", DEFAULT_GRID_DAYS);
 
   if (min > max) {
     throw new Error("--min must be less than or equal to --max");
