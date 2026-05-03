@@ -11,6 +11,7 @@ Commands:
   npm run log -- "message"        Add a current-time activity entry
   npm run generate-grid           Create a local random contribution grid
   node index.js --check           Validate the activity log
+  node index.js --stats           Show activity totals
   node index.js --help            Show this help
 `);
 }
@@ -98,6 +99,17 @@ if (args.includes("--help")) {
 if (args.includes("--check")) {
   const entries = await readEntries();
   console.log(`Activity log is valid. Entries: ${entries.length}`);
+  process.exit(0);
+}
+
+if (args.includes("--stats")) {
+  const entries = await readEntries();
+  const days = new Set(entries.map((entry) => entry.date.slice(0, 10)));
+  const latest = entries.at(-1)?.date ?? "none";
+
+  console.log(`Entries: ${entries.length}`);
+  console.log(`Active days: ${days.size}`);
+  console.log(`Latest entry: ${latest}`);
   process.exit(0);
 }
 
