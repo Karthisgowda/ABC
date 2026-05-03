@@ -15,7 +15,7 @@
     "summary-json": "node index.js --summary-json",
     "stats": "node index.js --stats",
     "today": "node index.js --today",
-    "test": "node index.js --check"
+    "test": "node scripts/run-checks.mjs"
   },
   "keywords": [
     "activity-log",
