@@ -115,6 +115,12 @@ if (args.includes("--help")) {
 
 if (args.includes("--check")) {
   const entries = await readEntries();
+  const invalidEntries = entries.filter((entry) => !entry.date || !entry.message);
+
+  if (invalidEntries.length > 0) {
+    throw new Error(`Activity log has ${invalidEntries.length} invalid entries`);
+  }
+
   console.log(`Activity log is valid. Entries: ${entries.length}`);
   process.exit(0);
 }
