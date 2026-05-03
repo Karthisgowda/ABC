@@ -4,6 +4,7 @@ const DATA_PATH = new URL("./data.json", import.meta.url);
 const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
 const GRID_CSV_PATH = new URL("./contribution-grid.csv", import.meta.url);
+const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
 const commands = [
@@ -17,6 +18,7 @@ const commands = [
   "node index.js --summary-json    Export activity summary JSON",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --grid-csv        Export local grid boxes to CSV",
+  "node index.js --grid-markdown   Export local grid summary markdown",
   "node index.js --grid-stats      Show local grid totals",
   "node index.js --help            Show this help",
 ];
@@ -223,6 +225,23 @@ if (args.includes("--grid-csv")) {
 
   await writeFile(GRID_CSV_PATH, `${rows.join("\n")}\n`);
   console.log(`Exported ${grid.length} grid boxes to contribution-grid.csv`);
+  process.exit(0);
+}
+
+if (args.includes("--grid-markdown")) {
+  const grid = await readGrid();
+  const total = grid.reduce((sum, box) => sum + Number(box.count ?? 0), 0);
+  const average = grid.length === 0 ? 0 : total / grid.length;
+  const markdown = `# Grid Summary
+
+- Boxes: ${grid.length}
+- Total count: ${total}
+- Average count: ${average.toFixed(2)}
+- Generated: ${new Date().toISOString()}
+`;
+
+  await writeFile(GRID_MARKDOWN_PATH, markdown);
+  console.log("Exported grid-summary.md");
   process.exit(0);
 }
 
