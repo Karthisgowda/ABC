@@ -95,6 +95,10 @@ function createEntryId(date) {
   return date.replace(/[-:.TZ]/g, "").slice(0, 14);
 }
 
+function normalizeMessage(message) {
+  return message.replace(/\s+/g, " ").trim();
+}
+
 function buildContributionGrid({ weeks, days, min, max }) {
   const today = new Date();
   const grid = [];
@@ -265,7 +269,7 @@ if (args.includes("--grid-markdown")) {
   process.exit(0);
 }
 
-const message = args.join(" ").trim() || "Worked on ABC";
+const message = normalizeMessage(args.join(" ")) || "Worked on ABC";
 const entries = await readEntries();
 const date = new Date().toISOString();
 
