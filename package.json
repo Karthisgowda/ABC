@@ -1,19 +1,18 @@
 {
-  "name": "thomyorke",
+  "name": "abc",
   "version": "1.0.0",
-  "description": "nice dream",
+  "description": "A simple current-day activity logger for real project work.",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "log": "node index.js",
+    "test": "node index.js --check"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "activity-log",
+    "github"
+  ],
+  "author": "Karthisgowda",
   "license": "ISC",
-  "dependencies": {
-    "jsonfile": "^6.1.0",
-    "moment": "^2.30.1",
-    "random": "^4.1.0",
-    "simple-git": "^3.25.0"
-  }
+  "dependencies": {}
 }

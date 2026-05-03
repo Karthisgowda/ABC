@@ -1,40 +1,39 @@
-import jsonfile from "jsonfile";
-import moment from "moment";
-import simpleGit from "simple-git";
-import random from "random";
+import { readFile, writeFile } from "node:fs/promises";
 
-const path = "./data.json";
+const DATA_PATH = new URL("./data.json", import.meta.url);
+const args = process.argv.slice(2);
 
-const markCommit = (x, y) => {
-  const date = moment()
-    .subtract(1, "y")
-    .add(1, "d")
-    .add(x, "w")
-    .add(y, "d")
-    .format();
+async function readEntries() {
+  try {
+    const content = await readFile(DATA_PATH, "utf8");
+    const parsed = JSON.parse(content);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return [];
+    }
 
-  const data = {
-    date: date,
-  };
+    throw error;
+  }
+}
 
-  jsonfile.writeFile(path, data, () => {
-    simpleGit().add([path]).commit(date, { "--date": date }).push();
-  });
-};
+async function writeEntries(entries) {
+  await writeFile(DATA_PATH, `${JSON.stringify(entries, null, 2)}\n`);
+}
 
-const makeCommits = (n) => {
-  if(n===0) return simpleGit().push();
-  const x = random.int(0, 54);
-  const y = random.int(0, 6);
-  const date = moment().subtract(1, "y").add(1, "d").add(x, "w").add(y, "d").format();
+if (args.includes("--check")) {
+  const entries = await readEntries();
+  console.log(`Activity log is valid. Entries: ${entries.length}`);
+  process.exit(0);
+}
 
-  const data = {
-    date: date,
-  };
-  console.log(date);
-  jsonfile.writeFile(path, data, () => {
-    simpleGit().add([path]).commit(date, { "--date": date },makeCommits.bind(this,--n));
-  });
-};
+const message = args.join(" ").trim() || "Worked on ABC";
+const entries = await readEntries();
 
-makeCommits(100);
+entries.push({
+  date: new Date().toISOString(),
+  message,
+});
+
+await writeEntries(entries);
+console.log(`Logged activity: ${message}`);
