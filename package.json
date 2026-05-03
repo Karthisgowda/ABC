@@ -5,8 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "export-csv": "node index.js --export-csv",
     "generate-grid": "node index.js --generate-grid",
+    "grid-stats": "node index.js --grid-stats",
     "log": "node index.js",
+    "stats": "node index.js --stats",
     "test": "node index.js --check"
   },
   "keywords": [
