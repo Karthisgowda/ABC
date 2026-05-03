@@ -8,6 +8,7 @@ const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
 const APP_VERSION = "1.0.0";
+const MAX_MESSAGE_LENGTH = 160;
 const DEFAULT_GRID_WEEKS = 53;
 const DEFAULT_GRID_DAYS = 7;
 const DEFAULT_GRID_MIN = 2;
@@ -270,6 +271,11 @@ if (args.includes("--grid-markdown")) {
 }
 
 const message = normalizeMessage(args.join(" ")) || "Worked on ABC";
+
+if (message.length > MAX_MESSAGE_LENGTH) {
+  throw new Error(`Activity message must be ${MAX_MESSAGE_LENGTH} characters or fewer`);
+}
+
 const entries = await readEntries();
 const date = new Date().toISOString();
 
