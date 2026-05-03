@@ -14,6 +14,7 @@ Commands:
   node index.js --check           Validate the activity log
   node index.js --stats           Show activity totals
   node index.js --export-csv      Export activity entries to CSV
+  node index.js --grid-stats      Show local grid totals
   node index.js --help            Show this help
 `);
 }
@@ -34,6 +35,20 @@ async function readEntries() {
 
 async function writeEntries(entries) {
   await writeFile(DATA_PATH, `${JSON.stringify(entries, null, 2)}\n`);
+}
+
+async function readGrid() {
+  try {
+    const content = await readFile(GRID_PATH, "utf8");
+    const parsed = JSON.parse(content);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return [];
+    }
+
+    throw error;
+  }
 }
 
 function readNumberFlag(name, defaultValue) {
@@ -126,6 +141,17 @@ if (args.includes("--export-csv")) {
 
   await writeFile(CSV_PATH, `${rows.join("\n")}\n`);
   console.log(`Exported ${entries.length} entries to activity-log.csv`);
+  process.exit(0);
+}
+
+if (args.includes("--grid-stats")) {
+  const grid = await readGrid();
+  const total = grid.reduce((sum, box) => sum + Number(box.count ?? 0), 0);
+  const average = grid.length === 0 ? 0 : total / grid.length;
+
+  console.log(`Grid boxes: ${grid.length}`);
+  console.log(`Grid total: ${total}`);
+  console.log(`Grid average: ${average.toFixed(2)}`);
   process.exit(0);
 }
 
