@@ -7,6 +7,7 @@ const GRID_CSV_PATH = new URL("./contribution-grid.csv", import.meta.url);
 const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
+const APP_VERSION = "1.0.0";
 const commands = [
   'npm run log -- "message"        Add a current-time activity entry',
   "npm run generate-grid           Create a local random contribution grid",
@@ -20,6 +21,7 @@ const commands = [
   "node index.js --grid-csv        Export local grid boxes to CSV",
   "node index.js --grid-markdown   Export local grid summary markdown",
   "node index.js --grid-stats      Show local grid totals",
+  "node index.js --version         Show the CLI version",
   "node index.js --help            Show this help",
 ];
 
@@ -122,6 +124,11 @@ if (args.includes("--generate-grid")) {
 
 if (args.includes("--help")) {
   printHelp();
+  process.exit(0);
+}
+
+if (args.includes("--version")) {
+  console.log(APP_VERSION);
   process.exit(0);
 }
 
