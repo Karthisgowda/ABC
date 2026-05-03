@@ -275,7 +275,7 @@ if (args.includes("--grid-csv")) {
   const rows = ["week,day,date,count"];
 
   for (const box of grid) {
-    rows.push(`${box.week},${box.day},${box.date},${box.count}`);
+    rows.push([box.week, box.day, box.date, box.count].map(escapeCsv).join(","));
   }
 
   await writeFile(GRID_CSV_PATH, `${rows.join("\n")}\n`);
