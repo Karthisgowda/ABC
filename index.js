@@ -100,6 +100,10 @@ function normalizeMessage(message) {
   return message.replace(/\s+/g, " ").trim();
 }
 
+function toDateKey(date) {
+  return date.slice(0, 10);
+}
+
 function buildContributionGrid({ weeks, days, min, max }) {
   const today = new Date();
   const grid = [];
@@ -181,7 +185,7 @@ if (args.includes("--list")) {
 
 if (args.includes("--stats")) {
   const entries = await readEntries();
-  const days = new Set(entries.map((entry) => entry.date.slice(0, 10)));
+  const days = new Set(entries.map((entry) => toDateKey(entry.date)));
   const latest = entries.at(-1)?.date ?? "none";
 
   console.log(`Entries: ${entries.length}`);
@@ -191,7 +195,7 @@ if (args.includes("--stats")) {
 }
 
 if (args.includes("--today")) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = toDateKey(new Date().toISOString());
   const entries = await readEntries();
   const todaysEntries = entries.filter((entry) => entry.date.startsWith(today));
 
@@ -202,7 +206,7 @@ if (args.includes("--today")) {
 
 if (args.includes("--summary-json")) {
   const entries = await readEntries();
-  const days = new Set(entries.map((entry) => entry.date.slice(0, 10)));
+  const days = new Set(entries.map((entry) => toDateKey(entry.date)));
   const summary = {
     entries: entries.length,
     activeDays: days.size,
