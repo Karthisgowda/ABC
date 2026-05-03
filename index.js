@@ -19,6 +19,7 @@ const commands = [
   "node index.js --check           Validate the activity log",
   "node index.js --list            Print activity entries",
   "node index.js --list --recent=5 Print the latest activity entries",
+  "node index.js --days            Show entries grouped by day",
   "node index.js --stats           Show activity totals",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
@@ -178,6 +179,26 @@ if (args.includes("--list")) {
 
   for (const entry of visibleEntries) {
     console.log(`${entry.date}  ${entry.message}`);
+  }
+
+  process.exit(0);
+}
+
+if (args.includes("--days")) {
+  const entries = await readEntries();
+  const totals = new Map();
+
+  for (const entry of entries) {
+    const day = toDateKey(entry.date);
+    totals.set(day, (totals.get(day) ?? 0) + 1);
+  }
+
+  for (const [day, count] of totals) {
+    console.log(`${day}: ${count}`);
+  }
+
+  if (totals.size === 0) {
+    console.log("No activity days found.");
   }
 
   process.exit(0);
