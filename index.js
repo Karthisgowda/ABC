@@ -11,6 +11,7 @@ const commands = [
   "node index.js --list            Print activity entries",
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --stats           Show activity totals",
+  "node index.js --today           Show today activity count",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --grid-stats      Show local grid totals",
   "node index.js --help            Show this help",
@@ -155,6 +156,16 @@ if (args.includes("--stats")) {
   console.log(`Entries: ${entries.length}`);
   console.log(`Active days: ${days.size}`);
   console.log(`Latest entry: ${latest}`);
+  process.exit(0);
+}
+
+if (args.includes("--today")) {
+  const today = new Date().toISOString().slice(0, 10);
+  const entries = await readEntries();
+  const todaysEntries = entries.filter((entry) => entry.date.startsWith(today));
+
+  console.log(`Today: ${today}`);
+  console.log(`Entries today: ${todaysEntries.length}`);
   process.exit(0);
 }
 
