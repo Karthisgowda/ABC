@@ -31,6 +31,20 @@ git commit -m "Update activity log"
 git push origin main
 ```
 
+Generate a local contribution-grid dataset with every box filled randomly from 2 to 4:
+
+```bash
+npm run generate-grid
+```
+
+You can adjust the values:
+
+```bash
+node index.js --generate-grid --min=2 --max=4 --weeks=53 --days=7
+```
+
+This writes `contribution-grid.json` for previews or planning. It does not create GitHub commits.
+
 ## Note
 
 This project records real, current activity only. It does not create backdated commits or artificial contribution history.

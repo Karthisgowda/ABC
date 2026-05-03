@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "generate-grid": "node index.js --generate-grid",
     "log": "node index.js",
     "test": "node index.js --check"
   },
