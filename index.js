@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 const DATA_PATH = new URL("./data.json", import.meta.url);
 const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
+const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
 const commands = [
   'npm run log -- "message"        Add a current-time activity entry',
@@ -12,6 +13,7 @@ const commands = [
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --stats           Show activity totals",
   "node index.js --today           Show today activity count",
+  "node index.js --summary-json    Export activity summary JSON",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --grid-stats      Show local grid totals",
   "node index.js --help            Show this help",
@@ -166,6 +168,21 @@ if (args.includes("--today")) {
 
   console.log(`Today: ${today}`);
   console.log(`Entries today: ${todaysEntries.length}`);
+  process.exit(0);
+}
+
+if (args.includes("--summary-json")) {
+  const entries = await readEntries();
+  const days = new Set(entries.map((entry) => entry.date.slice(0, 10)));
+  const summary = {
+    entries: entries.length,
+    activeDays: days.size,
+    latestEntry: entries.at(-1)?.date ?? null,
+    generatedAt: new Date().toISOString(),
+  };
+
+  await writeFile(SUMMARY_PATH, `${JSON.stringify(summary, null, 2)}\n`);
+  console.log("Exported activity-summary.json");
   process.exit(0);
 }
 
