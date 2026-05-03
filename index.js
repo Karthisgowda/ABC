@@ -85,6 +85,12 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function requirePositiveInteger(name, value) {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`--${name} must be a positive integer`);
+  }
+}
+
 function createEntryId(date) {
   return date.replace(/[-:.TZ]/g, "").slice(0, 14);
 }
@@ -119,6 +125,9 @@ if (args.includes("--generate-grid")) {
   if (min > max) {
     throw new Error("--min must be less than or equal to --max");
   }
+
+  requirePositiveInteger("weeks", weeks);
+  requirePositiveInteger("days", days);
 
   const grid = buildContributionGrid({ weeks, days, min, max });
   await writeFile(GRID_PATH, `${JSON.stringify(grid, null, 2)}\n`);
