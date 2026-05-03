@@ -49,6 +49,10 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function createEntryId(date) {
+  return date.replace(/[-:.TZ]/g, "").slice(0, 14);
+}
+
 function buildContributionGrid({ weeks, days, min, max }) {
   const today = new Date();
   const grid = [];
@@ -99,9 +103,11 @@ if (args.includes("--check")) {
 
 const message = args.join(" ").trim() || "Worked on ABC";
 const entries = await readEntries();
+const date = new Date().toISOString();
 
 entries.push({
-  date: new Date().toISOString(),
+  id: createEntryId(date),
+  date,
   message,
 });
 
