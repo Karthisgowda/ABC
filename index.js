@@ -186,10 +186,12 @@ if (args.includes("--list")) {
 if (args.includes("--stats")) {
   const entries = await readEntries();
   const days = new Set(entries.map((entry) => toDateKey(entry.date)));
+  const messages = entries.filter((entry) => entry.message).length;
   const latest = entries.at(-1)?.date ?? "none";
 
   console.log(`Entries: ${entries.length}`);
   console.log(`Active days: ${days.size}`);
+  console.log(`Messages: ${messages}`);
   console.log(`Latest entry: ${latest}`);
   process.exit(0);
 }
