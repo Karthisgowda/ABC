@@ -23,6 +23,18 @@ Add a work entry for today:
 npm run log -- "Worked on project setup"
 ```
 
+View activity totals:
+
+```bash
+npm run stats
+```
+
+Export the log:
+
+```bash
+npm run export-csv
+```
+
 The script appends the current timestamp and message to `data.json`. Commit and push your real project changes normally:
 
 ```bash
@@ -44,6 +56,12 @@ node index.js --generate-grid --min=2 --max=4 --weeks=53 --days=7
 ```
 
 This writes `contribution-grid.json` for previews or planning. It does not create GitHub commits.
+
+Review the generated grid totals:
+
+```bash
+npm run grid-stats
+```
 
 ## Note
 
