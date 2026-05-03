@@ -9,6 +9,7 @@ const commands = [
   "npm run generate-grid           Create a local random contribution grid",
   "node index.js --check           Validate the activity log",
   "node index.js --list            Print activity entries",
+  "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --stats           Show activity totals",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --grid-stats      Show local grid totals",
@@ -130,14 +131,16 @@ if (args.includes("--check")) {
 }
 
 if (args.includes("--list")) {
+  const recent = readNumberFlag("recent", 0);
   const entries = await readEntries();
+  const visibleEntries = recent > 0 ? entries.slice(-recent) : entries;
 
-  if (entries.length === 0) {
+  if (visibleEntries.length === 0) {
     console.log("No activity entries found.");
     process.exit(0);
   }
 
-  for (const entry of entries) {
+  for (const entry of visibleEntries) {
     console.log(`${entry.date}  ${entry.message}`);
   }
 
