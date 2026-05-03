@@ -94,6 +94,14 @@ Run checks:
 npm test
 ```
 
+## Documentation
+
+- [Commands](docs/commands.md)
+- [Grid Data](docs/grid.md)
+- [Reports](docs/reports.md)
+- [Testing](docs/testing.md)
+- [Git Setup](docs/git-setup.md)
+
 ## Note
 
 This project records real, current activity only. It does not create backdated commits or artificial contribution history.
