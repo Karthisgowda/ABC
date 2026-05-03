@@ -4,6 +4,17 @@ const DATA_PATH = new URL("./data.json", import.meta.url);
 const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const args = process.argv.slice(2);
 
+function printHelp() {
+  console.log(`ABC activity logger
+
+Commands:
+  npm run log -- "message"        Add a current-time activity entry
+  npm run generate-grid           Create a local random contribution grid
+  node index.js --check           Validate the activity log
+  node index.js --help            Show this help
+`);
+}
+
 async function readEntries() {
   try {
     const content = await readFile(DATA_PATH, "utf8");
@@ -72,6 +83,11 @@ if (args.includes("--generate-grid")) {
   const grid = buildContributionGrid({ weeks, days, min, max });
   await writeFile(GRID_PATH, `${JSON.stringify(grid, null, 2)}\n`);
   console.log(`Generated ${grid.length} local grid boxes in contribution-grid.json`);
+  process.exit(0);
+}
+
+if (args.includes("--help")) {
+  printHelp();
   process.exit(0);
 }
 
