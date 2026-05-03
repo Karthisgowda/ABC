@@ -101,6 +101,10 @@ function normalizeMessage(message) {
   return message.replace(/\s+/g, " ").trim();
 }
 
+function escapeCsv(value) {
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
 function toDateKey(date) {
   return date.slice(0, 10);
 }
@@ -247,8 +251,7 @@ if (args.includes("--export-csv")) {
   const rows = ["id,date,message"];
 
   for (const entry of entries) {
-    const message = String(entry.message ?? "").replaceAll('"', '""');
-    rows.push(`${entry.id ?? ""},${entry.date},"${message}"`);
+    rows.push([entry.id ?? "", entry.date, entry.message].map(escapeCsv).join(","));
   }
 
   await writeFile(CSV_PATH, `${rows.join("\n")}\n`);
