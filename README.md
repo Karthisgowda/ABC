@@ -53,6 +53,13 @@ Import a previously exported log:
 npm run import-csv
 ```
 
+Back up and restore the activity log:
+
+```bash
+npm run backup-json
+npm run restore-json
+```
+
 Export a summary file:
 
 ```bash

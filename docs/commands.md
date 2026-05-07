@@ -11,10 +11,12 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 
 ## Reports
 
+- `npm run backup-json` writes `activity-backup.json`.
 - `npm run stats` prints activity totals.
 - `npm run dashboard` writes a local `dashboard.html` preview.
 - `npm run export-csv` writes `activity-log.csv`.
 - `npm run import-csv` merges entries from `activity-log.csv` into `data.json`.
+- `npm run restore-json` merges entries from `activity-backup.json` into `data.json`.
 - `npm run summary-json` writes `activity-summary.json`.
 
 ## Grid
