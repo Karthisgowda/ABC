@@ -7,6 +7,7 @@ exports.
 
 - `activity-log.csv` contains one row per activity entry.
 - `activity-summary.json` contains total entries, active days, and latest entry.
+- `dashboard.html` contains a local browser dashboard for activity and grid data.
 
 ## Grid Reports
 

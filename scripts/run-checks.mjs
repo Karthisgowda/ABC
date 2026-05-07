@@ -14,6 +14,7 @@ const checks = [
   { args: ["--stats"], expected: "Entries:" },
   { args: ["--days"], expected: "No activity days found." },
   { args: ["--today"], expected: "Entries today:" },
+  { args: ["--dashboard"], expected: "Exported dashboard.html" },
   { args: ["--grid-stats"], expected: "Grid boxes:" },
   { args: ["--version"], expected: "1.0.0" },
   { args: ["--help"], expected: "ABC activity logger" },

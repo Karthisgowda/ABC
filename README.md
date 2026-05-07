@@ -53,6 +53,12 @@ Export a summary file:
 npm run summary-json
 ```
 
+Generate a local dashboard:
+
+```bash
+npm run dashboard
+```
+
 The script appends the current timestamp and message to `data.json`. Commit and push your real project changes normally:
 
 ```bash
