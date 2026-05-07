@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "days": "node index.js --days",
+    "dashboard": "node index.js --dashboard",
     "export-csv": "node index.js --export-csv",
     "generate-grid": "node index.js --generate-grid",
     "grid-csv": "node index.js --grid-csv",

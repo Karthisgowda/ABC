@@ -5,6 +5,7 @@ const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
 const GRID_CSV_PATH = new URL("./contribution-grid.csv", import.meta.url);
 const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
+const DASHBOARD_PATH = new URL("./dashboard.html", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const args = process.argv.slice(2);
 const APP_VERSION = "1.0.0";
@@ -23,6 +24,7 @@ const commands = [
   "node index.js --stats           Show activity totals",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
+  "node index.js --dashboard       Export a local HTML dashboard",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --grid-csv        Export local grid boxes to CSV",
   "node index.js --grid-markdown   Export local grid summary markdown",
@@ -128,6 +130,68 @@ function buildContributionGrid({ weeks, days, min, max }) {
   }
 
   return grid;
+}
+
+function renderDashboardHtml(entries, grid) {
+  const total = grid.reduce((sum, box) => sum + Number(box.count ?? 0), 0);
+  const activeDays = new Set(entries.map((entry) => toDateKey(entry.date))).size;
+  const latest = entries.at(-1)?.date ?? "none";
+  const cells = grid
+    .map((box) => {
+      const count = Number(box.count ?? 0);
+      const level = Math.max(0, Math.min(4, count));
+      return `<span class="cell level-${level}" title="${box.date}: ${count}"></span>`;
+    })
+    .join("");
+  const recentRows = entries
+    .slice(-10)
+    .reverse()
+    .map((entry) => `<li><time>${entry.date}</time><span>${entry.message}</span></li>`)
+    .join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABC Activity Dashboard</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #111827; color: #e5e7eb; }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 20px; }
+    h1 { margin: 0 0 8px; font-size: 32px; }
+    .muted { color: #9ca3af; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat { border: 1px solid #374151; border-radius: 8px; padding: 16px; background: #1f2937; }
+    .stat strong { display: block; font-size: 28px; margin-bottom: 4px; }
+    .grid { display: grid; grid-template-rows: repeat(7, 13px); grid-auto-flow: column; grid-auto-columns: 13px; gap: 4px; overflow-x: auto; padding: 16px; border: 1px solid #374151; border-radius: 8px; background: #1f2937; }
+    .cell { width: 13px; height: 13px; border-radius: 3px; background: #263241; }
+    .level-1 { background: #0e4429; }
+    .level-2 { background: #006d32; }
+    .level-3 { background: #26a641; }
+    .level-4 { background: #39d353; }
+    ul { padding: 0; list-style: none; }
+    li { display: grid; grid-template-columns: 190px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid #273244; }
+    time { color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ABC Activity Dashboard</h1>
+    <p class="muted">Generated from local activity and grid data.</p>
+    <section class="stats">
+      <div class="stat"><strong>${entries.length}</strong><span>Entries</span></div>
+      <div class="stat"><strong>${activeDays}</strong><span>Active days</span></div>
+      <div class="stat"><strong>${grid.length}</strong><span>Grid boxes</span></div>
+      <div class="stat"><strong>${total}</strong><span>Grid total</span></div>
+    </section>
+    <p class="muted">Latest entry: ${latest}</p>
+    <section class="grid" aria-label="Contribution grid preview">${cells}</section>
+    <h2>Recent Entries</h2>
+    <ul>${recentRows || "<li><span>No entries yet.</span></li>"}</ul>
+  </main>
+</body>
+</html>
+`;
 }
 
 if (args.includes("--generate-grid")) {
@@ -243,6 +307,14 @@ if (args.includes("--summary-json")) {
 
   await writeFile(SUMMARY_PATH, `${JSON.stringify(summary, null, 2)}\n`);
   console.log("Exported activity-summary.json");
+  process.exit(0);
+}
+
+if (args.includes("--dashboard")) {
+  const entries = await readEntries();
+  const grid = await readGrid();
+  await writeFile(DASHBOARD_PATH, renderDashboardHtml(entries, grid));
+  console.log("Exported dashboard.html");
   process.exit(0);
 }
 
