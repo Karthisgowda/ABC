@@ -9,6 +9,10 @@ exports.
 - `activity-summary.json` contains total entries, active days, and latest entry.
 - `dashboard.html` contains a local browser dashboard for activity and grid data.
 
+Use `npm run import-csv` to merge entries from `activity-log.csv` back into
+`data.json`. Rows are matched by `id`, so repeated imports update existing
+entries instead of creating duplicates.
+
 ## Grid Reports
 
 - `contribution-grid.csv` contains one row per grid box.

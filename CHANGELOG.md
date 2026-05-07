@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Added a local HTML dashboard export for activity and grid previews.
+- Added CSV import support with smoke test coverage.
 - Added CLI version output and related npm shortcut.
 - Added daily summaries, recent listing improvements, and stronger input checks.
 - Improved CSV escaping for activity and grid exports.

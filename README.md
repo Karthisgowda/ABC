@@ -47,6 +47,12 @@ Export the log:
 npm run export-csv
 ```
 
+Import a previously exported log:
+
+```bash
+npm run import-csv
+```
+
 Export a summary file:
 
 ```bash
