@@ -12,6 +12,7 @@
     "grid-csv": "node index.js --grid-csv",
     "grid-markdown": "node index.js --grid-markdown",
     "grid-stats": "node index.js --grid-stats",
+    "import-csv": "node index.js --import-csv",
     "list": "node index.js --list",
     "log": "node index.js",
     "summary-json": "node index.js --summary-json",

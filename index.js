@@ -26,6 +26,7 @@ const commands = [
   "node index.js --summary-json    Export activity summary JSON",
   "node index.js --dashboard       Export a local HTML dashboard",
   "node index.js --export-csv      Export activity entries to CSV",
+  "node index.js --import-csv      Import entries from activity-log.csv",
   "node index.js --grid-csv        Export local grid boxes to CSV",
   "node index.js --grid-markdown   Export local grid summary markdown",
   "node index.js --grid-stats      Show local grid totals",
@@ -105,6 +106,66 @@ function normalizeMessage(message) {
 
 function escapeCsv(value) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+function parseCsvLine(line) {
+  const values = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const nextChar = line[index + 1];
+
+    if (char === '"' && inQuotes && nextChar === '"') {
+      current += '"';
+      index += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+
+    if (char === "," && !inQuotes) {
+      values.push(current);
+      current = "";
+      continue;
+    }
+
+    current += char;
+  }
+
+  values.push(current);
+  return values;
+}
+
+function parseActivityCsv(content) {
+  const [headerLine, ...lines] = content.trim().split(/\r?\n/);
+  const headers = parseCsvLine(headerLine ?? "");
+  const idIndex = headers.indexOf("id");
+  const dateIndex = headers.indexOf("date");
+  const messageIndex = headers.indexOf("message");
+
+  if (idIndex === -1 || dateIndex === -1 || messageIndex === -1) {
+    throw new Error("CSV must include id, date, and message columns");
+  }
+
+  return lines
+    .filter((line) => line.trim())
+    .map((line) => {
+      const values = parseCsvLine(line);
+      const date = normalizeMessage(values[dateIndex] ?? "");
+      const message = normalizeMessage(values[messageIndex] ?? "");
+      const id = normalizeMessage(values[idIndex] ?? "") || createEntryId(date);
+
+      if (!date || !message) {
+        throw new Error("CSV rows must include date and message values");
+      }
+
+      return { id, date, message };
+    });
 }
 
 function toDateKey(date) {
@@ -328,6 +389,20 @@ if (args.includes("--export-csv")) {
 
   await writeFile(CSV_PATH, `${rows.join("\n")}\n`);
   console.log(`Exported ${entries.length} entries to activity-log.csv`);
+  process.exit(0);
+}
+
+if (args.includes("--import-csv")) {
+  const content = await readFile(CSV_PATH, "utf8");
+  const importedEntries = parseActivityCsv(content);
+  const entriesById = new Map((await readEntries()).map((entry) => [entry.id, entry]));
+
+  for (const entry of importedEntries) {
+    entriesById.set(entry.id, entry);
+  }
+
+  await writeEntries([...entriesById.values()]);
+  console.log(`Imported ${importedEntries.length} entries from activity-log.csv`);
   process.exit(0);
 }
 
