@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, unlinkSync } from "node:fs";
+import { copyFileSync, existsSync, unlinkSync, writeFileSync } from "node:fs";
 
 const node = process.execPath;
 const dataPath = "data.json";
@@ -75,7 +75,17 @@ try {
     throw new Error("Expected JSON restore to complete");
   }
 
-  console.log(`Passed ${checks.length + 4} CLI checks`);
+  writeFileSync(
+    dataPath,
+    JSON.stringify([{ id: "search-test", date: "2026-01-01T00:00:00.000Z", message: "Searchable activity entry" }], null, 2),
+  );
+
+  const searchOutput = run(["--search=searchable"]);
+  if (!searchOutput.includes("Searchable activity entry")) {
+    throw new Error("Expected activity search to find the fixture entry");
+  }
+
+  console.log(`Passed ${checks.length + 5} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
