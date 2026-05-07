@@ -41,6 +41,12 @@ List entries:
 npm run list
 ```
 
+Search entries:
+
+```bash
+npm run search -- --search=project
+```
+
 Export the log:
 
 ```bash
