@@ -12,4 +12,5 @@ activity-log.csv
 activity-summary.json
 contribution-grid.csv
 dashboard.html
+*.test-backup
 grid-summary.md
