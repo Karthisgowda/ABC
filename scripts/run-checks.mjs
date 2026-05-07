@@ -4,8 +4,10 @@ import { copyFileSync, existsSync, unlinkSync } from "node:fs";
 const node = process.execPath;
 const dataPath = "data.json";
 const csvPath = "activity-log.csv";
+const backupJsonPath = "activity-backup.json";
 const dataBackupPath = "data.json.test-backup";
 const csvBackupPath = "activity-log.csv.test-backup";
+const backupJsonBackupPath = "activity-backup.json.test-backup";
 
 function run(args) {
   return execFileSync(node, ["index.js", ...args], {
@@ -42,6 +44,7 @@ function restore(path, backupPath) {
 
 backup(dataPath, dataBackupPath);
 backup(csvPath, csvBackupPath);
+backup(backupJsonPath, backupJsonBackupPath);
 
 try {
   for (const check of checks) {
@@ -62,8 +65,19 @@ try {
     throw new Error("Expected CSV import to complete");
   }
 
-  console.log(`Passed ${checks.length + 2} CLI checks`);
+  const backupOutput = run(["--backup-json"]);
+  if (!backupOutput.includes("Backed up")) {
+    throw new Error("Expected JSON backup to complete");
+  }
+
+  const restoreOutput = run(["--restore-json"]);
+  if (!restoreOutput.includes("Restored")) {
+    throw new Error("Expected JSON restore to complete");
+  }
+
+  console.log(`Passed ${checks.length + 4} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
+  restore(backupJsonPath, backupJsonBackupPath);
 }
