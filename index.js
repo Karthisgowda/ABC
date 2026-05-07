@@ -21,6 +21,7 @@ const commands = [
   "node index.js --check           Validate the activity log",
   "node index.js --list            Print activity entries",
   "node index.js --list --recent=5 Print the latest activity entries",
+  "node index.js --search=term     Search activity messages",
   "node index.js --days            Show entries grouped by day",
   "node index.js --stats           Show activity totals",
   "node index.js --today           Show today activity count",
@@ -203,6 +204,12 @@ function toDateKey(date) {
   return date.slice(0, 10);
 }
 
+function readTextFlag(name) {
+  const prefix = `--${name}=`;
+  const value = args.find((arg) => arg.startsWith(prefix));
+  return value ? normalizeMessage(value.slice(prefix.length)) : "";
+}
+
 function buildContributionGrid({ weeks, days, min, max }) {
   const today = new Date();
   const grid = [];
@@ -338,6 +345,24 @@ if (args.includes("--list")) {
   }
 
   for (const entry of visibleEntries) {
+    console.log(`${entry.date}  ${entry.message}`);
+  }
+
+  process.exit(0);
+}
+
+const searchTerm = readTextFlag("search");
+
+if (searchTerm) {
+  const entries = await readEntries();
+  const matches = entries.filter((entry) => entry.message.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  if (matches.length === 0) {
+    console.log(`No activity entries matched "${searchTerm}".`);
+    process.exit(0);
+  }
+
+  for (const entry of matches) {
     console.log(`${entry.date}  ${entry.message}`);
   }
 

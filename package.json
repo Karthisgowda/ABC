@@ -17,6 +17,7 @@
     "list": "node index.js --list",
     "log": "node index.js",
     "restore-json": "node index.js --restore-json",
+    "search": "node index.js",
     "summary-json": "node index.js --summary-json",
     "stats": "node index.js --stats",
     "today": "node index.js --today",
