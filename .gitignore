@@ -9,6 +9,7 @@ pnpm-debug.log*
 Thumbs.db
 
 activity-log.csv
+activity-backup.json
 activity-summary.json
 contribution-grid.csv
 dashboard.html

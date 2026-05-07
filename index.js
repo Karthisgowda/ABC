@@ -7,6 +7,7 @@ const GRID_CSV_PATH = new URL("./contribution-grid.csv", import.meta.url);
 const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
 const DASHBOARD_PATH = new URL("./dashboard.html", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
+const BACKUP_PATH = new URL("./activity-backup.json", import.meta.url);
 const args = process.argv.slice(2);
 const APP_VERSION = "1.0.0";
 const MAX_MESSAGE_LENGTH = 160;
@@ -27,6 +28,8 @@ const commands = [
   "node index.js --dashboard       Export a local HTML dashboard",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --import-csv      Import entries from activity-log.csv",
+  "node index.js --backup-json     Export entries to activity-backup.json",
+  "node index.js --restore-json    Restore entries from activity-backup.json",
   "node index.js --grid-csv        Export local grid boxes to CSV",
   "node index.js --grid-markdown   Export local grid summary markdown",
   "node index.js --grid-stats      Show local grid totals",
@@ -166,6 +169,34 @@ function parseActivityCsv(content) {
 
       return { id, date, message };
     });
+}
+
+function validateActivityEntries(entries) {
+  if (!Array.isArray(entries)) {
+    throw new Error("Activity data must be an array");
+  }
+
+  return entries.map((entry) => {
+    const date = normalizeMessage(entry?.date ?? "");
+    const message = normalizeMessage(entry?.message ?? "");
+    const id = normalizeMessage(entry?.id ?? "") || createEntryId(date);
+
+    if (!date || !message) {
+      throw new Error("Activity entries must include date and message values");
+    }
+
+    return { id, date, message };
+  });
+}
+
+function mergeEntries(currentEntries, incomingEntries) {
+  const entriesById = new Map(currentEntries.map((entry) => [entry.id, entry]));
+
+  for (const entry of incomingEntries) {
+    entriesById.set(entry.id, entry);
+  }
+
+  return [...entriesById.values()];
 }
 
 function toDateKey(date) {
@@ -395,14 +426,23 @@ if (args.includes("--export-csv")) {
 if (args.includes("--import-csv")) {
   const content = await readFile(CSV_PATH, "utf8");
   const importedEntries = parseActivityCsv(content);
-  const entriesById = new Map((await readEntries()).map((entry) => [entry.id, entry]));
-
-  for (const entry of importedEntries) {
-    entriesById.set(entry.id, entry);
-  }
-
-  await writeEntries([...entriesById.values()]);
+  await writeEntries(mergeEntries(await readEntries(), importedEntries));
   console.log(`Imported ${importedEntries.length} entries from activity-log.csv`);
+  process.exit(0);
+}
+
+if (args.includes("--backup-json")) {
+  const entries = await readEntries();
+  await writeFile(BACKUP_PATH, `${JSON.stringify(entries, null, 2)}\n`);
+  console.log(`Backed up ${entries.length} entries to activity-backup.json`);
+  process.exit(0);
+}
+
+if (args.includes("--restore-json")) {
+  const content = await readFile(BACKUP_PATH, "utf8");
+  const restoredEntries = validateActivityEntries(JSON.parse(content));
+  await writeEntries(mergeEntries(await readEntries(), restoredEntries));
+  console.log(`Restored ${restoredEntries.length} entries from activity-backup.json`);
   process.exit(0);
 }
 
