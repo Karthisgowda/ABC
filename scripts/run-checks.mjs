@@ -77,7 +77,18 @@ try {
 
   writeFileSync(
     dataPath,
-    JSON.stringify([{ id: "search-test", date: "2026-01-01T00:00:00.000Z", message: "Searchable activity entry" }], null, 2),
+    JSON.stringify(
+      [
+        {
+          id: "search-test",
+          date: "2026-01-01T00:00:00.000Z",
+          message: "Searchable activity entry",
+          tags: ["review", "docs"],
+        },
+      ],
+      null,
+      2,
+    ),
   );
 
   const searchOutput = run(["--search=searchable"]);
@@ -85,7 +96,27 @@ try {
     throw new Error("Expected activity search to find the fixture entry");
   }
 
-  console.log(`Passed ${checks.length + 5} CLI checks`);
+  const tagSearchOutput = run(["--search=review"]);
+  if (!tagSearchOutput.includes("#review")) {
+    throw new Error("Expected activity search to match tags");
+  }
+
+  const statsOutput = run(["--stats"]);
+  if (!statsOutput.includes("Tags: 2")) {
+    throw new Error("Expected stats to count unique tags");
+  }
+
+  const logOutput = run(["Tagged test entry", "--tag=work", "--tag=review"]);
+  if (!logOutput.includes("Logged activity")) {
+    throw new Error("Expected tagged log command to complete");
+  }
+
+  const listOutput = run(["--list", "--recent=1"]);
+  if (!listOutput.includes("#work") || !listOutput.includes("#review")) {
+    throw new Error("Expected recent list to include tags");
+  }
+
+  console.log(`Passed ${checks.length + 9} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
