@@ -36,9 +36,17 @@ function backup(path, backupPath) {
 function restore(path, backupPath) {
   if (existsSync(backupPath)) {
     copyFileSync(backupPath, path);
-    unlinkSync(backupPath);
+    try {
+      unlinkSync(backupPath);
+    } catch {
+      // Windows may briefly keep copied files locked; backup files are ignored.
+    }
   } else if (existsSync(path)) {
-    unlinkSync(path);
+    try {
+      unlinkSync(path);
+    } catch {
+      // Windows may briefly keep generated files locked; generated files are ignored.
+    }
   }
 }
 
