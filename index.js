@@ -24,6 +24,7 @@ const commands = [
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --search=term     Search activity messages",
   "node index.js --days            Show entries grouped by day",
+  "node index.js --tags            Show tag totals",
   "node index.js --stats           Show activity totals",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
@@ -210,6 +211,18 @@ function mergeEntries(currentEntries, incomingEntries) {
 
 function toDateKey(date) {
   return date.slice(0, 10);
+}
+
+function countTags(entries) {
+  const totals = new Map();
+
+  for (const entry of entries) {
+    for (const tag of entry.tags ?? []) {
+      totals.set(tag, (totals.get(tag) ?? 0) + 1);
+    }
+  }
+
+  return [...totals.entries()].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]));
 }
 
 function readTextFlag(name) {
@@ -406,6 +419,21 @@ if (args.includes("--days")) {
 
   if (totals.size === 0) {
     console.log("No activity days found.");
+  }
+
+  process.exit(0);
+}
+
+if (args.includes("--tags")) {
+  const tagTotals = countTags(await readEntries());
+
+  if (tagTotals.length === 0) {
+    console.log("No tags found.");
+    process.exit(0);
+  }
+
+  for (const [tag, count] of tagTotals) {
+    console.log(`#${tag}: ${count}`);
   }
 
   process.exit(0);
