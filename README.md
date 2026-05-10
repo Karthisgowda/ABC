@@ -55,6 +55,12 @@ npm run search -- --search=project
 
 Search also checks tags, so `--search=review` finds entries tagged with `review`.
 
+Show tag totals:
+
+```bash
+npm run tags
+```
+
 Export the log:
 
 ```bash
