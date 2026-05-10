@@ -106,6 +106,11 @@ try {
     throw new Error("Expected stats to count unique tags");
   }
 
+  const tagsOutput = run(["--tags"]);
+  if (!tagsOutput.includes("#review: 1") || !tagsOutput.includes("#docs: 1")) {
+    throw new Error("Expected tag totals to include fixture tags");
+  }
+
   const logOutput = run(["Tagged test entry", "--tag=work", "--tag=review"]);
   if (!logOutput.includes("Logged activity")) {
     throw new Error("Expected tagged log command to complete");
@@ -116,7 +121,7 @@ try {
     throw new Error("Expected recent list to include tags");
   }
 
-  console.log(`Passed ${checks.length + 9} CLI checks`);
+  console.log(`Passed ${checks.length + 10} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
