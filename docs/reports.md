@@ -9,6 +9,7 @@ exports.
 - `activity-log.csv` contains one row per activity entry.
 - `activity-summary.json` contains total entries, active days, and latest entry.
 - `dashboard.html` contains a local browser dashboard for activity and grid data.
+- Dashboard recent entries include tags when an entry has them.
 
 Use `npm run import-csv` to merge entries from `activity-log.csv` back into
 `data.json`. Rows are matched by `id`, so repeated imports update existing
@@ -16,6 +17,9 @@ entries instead of creating duplicates.
 
 Use `npm run backup-json` before making local edits, and `npm run restore-json`
 to merge that backup back into the current log.
+
+CSV export stores tags in the `tags` column separated by semicolons, and CSV
+import restores those tags when the column is present.
 
 ## Grid Reports
 

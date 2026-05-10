@@ -5,8 +5,10 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 ## Activity
 
 - `npm run log -- "message"` records a current-time activity entry.
+- `npm run log -- "message" --tag=work` records an entry with one or more tags.
 - `npm run list` prints all entries.
 - `npm run search -- --search=term` searches activity messages.
+- Search also matches tags.
 - `npm run days` groups entries by date.
 - `npm run today` prints the current date and today's entry count.
 

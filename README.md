@@ -23,6 +23,12 @@ Add a work entry for today:
 npm run log -- "Worked on project setup"
 ```
 
+Add tags to an entry:
+
+```bash
+npm run log -- "Reviewed reports" --tag=review --tag=docs
+```
+
 View activity totals:
 
 ```bash
@@ -46,6 +52,8 @@ Search entries:
 ```bash
 npm run search -- --search=project
 ```
+
+Search also checks tags, so `--search=review` finds entries tagged with `review`.
 
 Export the log:
 
