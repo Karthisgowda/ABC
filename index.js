@@ -17,6 +17,7 @@ const DEFAULT_GRID_MIN = 2;
 const DEFAULT_GRID_MAX = 4;
 const commands = [
   'npm run log -- "message"        Add a current-time activity entry',
+  'npm run log -- "message" --tag=work Add a tagged activity entry',
   "npm run generate-grid           Create a local random contribution grid",
   "node index.js --check           Validate the activity log",
   "node index.js --list            Print activity entries",
@@ -108,6 +109,10 @@ function normalizeMessage(message) {
   return message.replace(/\s+/g, " ").trim();
 }
 
+function normalizeTags(tags) {
+  return [...new Set(tags.map((tag) => normalizeMessage(tag).toLowerCase()).filter(Boolean))];
+}
+
 function escapeCsv(value) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
@@ -151,6 +156,7 @@ function parseActivityCsv(content) {
   const idIndex = headers.indexOf("id");
   const dateIndex = headers.indexOf("date");
   const messageIndex = headers.indexOf("message");
+  const tagsIndex = headers.indexOf("tags");
 
   if (idIndex === -1 || dateIndex === -1 || messageIndex === -1) {
     throw new Error("CSV must include id, date, and message columns");
@@ -163,12 +169,13 @@ function parseActivityCsv(content) {
       const date = normalizeMessage(values[dateIndex] ?? "");
       const message = normalizeMessage(values[messageIndex] ?? "");
       const id = normalizeMessage(values[idIndex] ?? "") || createEntryId(date);
+      const tags = tagsIndex === -1 ? [] : normalizeTags((values[tagsIndex] ?? "").split(";"));
 
       if (!date || !message) {
         throw new Error("CSV rows must include date and message values");
       }
 
-      return { id, date, message };
+      return { id, date, message, tags };
     });
 }
 
@@ -181,12 +188,13 @@ function validateActivityEntries(entries) {
     const date = normalizeMessage(entry?.date ?? "");
     const message = normalizeMessage(entry?.message ?? "");
     const id = normalizeMessage(entry?.id ?? "") || createEntryId(date);
+    const tags = Array.isArray(entry?.tags) ? normalizeTags(entry.tags) : [];
 
     if (!date || !message) {
       throw new Error("Activity entries must include date and message values");
     }
 
-    return { id, date, message };
+    return { id, date, message, tags };
   });
 }
 
@@ -208,6 +216,11 @@ function readTextFlag(name) {
   const prefix = `--${name}=`;
   const value = args.find((arg) => arg.startsWith(prefix));
   return value ? normalizeMessage(value.slice(prefix.length)) : "";
+}
+
+function readTextFlags(name) {
+  const prefix = `--${name}=`;
+  return args.filter((arg) => arg.startsWith(prefix)).map((arg) => normalizeMessage(arg.slice(prefix.length)));
 }
 
 function buildContributionGrid({ weeks, days, min, max }) {
@@ -245,7 +258,10 @@ function renderDashboardHtml(entries, grid) {
   const recentRows = entries
     .slice(-10)
     .reverse()
-    .map((entry) => `<li><time>${entry.date}</time><span>${entry.message}</span></li>`)
+    .map((entry) => {
+      const tags = entry.tags?.length ? `<small>${entry.tags.map((tag) => `#${tag}`).join(" ")}</small>` : "";
+      return `<li><time>${entry.date}</time><span>${entry.message}${tags}</span></li>`;
+    })
     .join("");
 
   return `<!doctype html>
@@ -271,6 +287,7 @@ function renderDashboardHtml(entries, grid) {
     ul { padding: 0; list-style: none; }
     li { display: grid; grid-template-columns: 190px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid #273244; }
     time { color: #9ca3af; }
+    small { display: block; margin-top: 4px; color: #34d399; }
   </style>
 </head>
 <body>
@@ -345,7 +362,8 @@ if (args.includes("--list")) {
   }
 
   for (const entry of visibleEntries) {
-    console.log(`${entry.date}  ${entry.message}`);
+    const tags = entry.tags?.length ? ` [${entry.tags.map((tag) => `#${tag}`).join(" ")}]` : "";
+    console.log(`${entry.date}  ${entry.message}${tags}`);
   }
 
   process.exit(0);
@@ -355,7 +373,10 @@ const searchTerm = readTextFlag("search");
 
 if (searchTerm) {
   const entries = await readEntries();
-  const matches = entries.filter((entry) => entry.message.toLowerCase().includes(searchTerm.toLowerCase()));
+  const matches = entries.filter((entry) => {
+    const haystack = [entry.message, ...(entry.tags ?? [])].join(" ").toLowerCase();
+    return haystack.includes(searchTerm.toLowerCase());
+  });
 
   if (matches.length === 0) {
     console.log(`No activity entries matched "${searchTerm}".`);
@@ -363,7 +384,8 @@ if (searchTerm) {
   }
 
   for (const entry of matches) {
-    console.log(`${entry.date}  ${entry.message}`);
+    const tags = entry.tags?.length ? ` [${entry.tags.map((tag) => `#${tag}`).join(" ")}]` : "";
+    console.log(`${entry.date}  ${entry.message}${tags}`);
   }
 
   process.exit(0);
@@ -393,11 +415,13 @@ if (args.includes("--stats")) {
   const entries = await readEntries();
   const days = new Set(entries.map((entry) => toDateKey(entry.date)));
   const messages = entries.filter((entry) => entry.message).length;
+  const tags = new Set(entries.flatMap((entry) => entry.tags ?? []));
   const latest = entries.at(-1)?.date ?? "none";
 
   console.log(`Entries: ${entries.length}`);
   console.log(`Active days: ${days.size}`);
   console.log(`Messages: ${messages}`);
+  console.log(`Tags: ${tags.size}`);
   console.log(`Latest entry: ${latest}`);
   process.exit(0);
 }
@@ -418,6 +442,7 @@ if (args.includes("--summary-json")) {
   const summary = {
     entries: entries.length,
     activeDays: days.size,
+    tags: [...new Set(entries.flatMap((entry) => entry.tags ?? []))],
     latestEntry: entries.at(-1)?.date ?? null,
     generatedAt: new Date().toISOString(),
   };
@@ -437,10 +462,10 @@ if (args.includes("--dashboard")) {
 
 if (args.includes("--export-csv")) {
   const entries = await readEntries();
-  const rows = ["id,date,message"];
+  const rows = ["id,date,message,tags"];
 
   for (const entry of entries) {
-    rows.push([entry.id ?? "", entry.date, entry.message].map(escapeCsv).join(","));
+    rows.push([entry.id ?? "", entry.date, entry.message, (entry.tags ?? []).join(";")].map(escapeCsv).join(","));
   }
 
   await writeFile(CSV_PATH, `${rows.join("\n")}\n`);
@@ -520,11 +545,13 @@ if (message.length > MAX_MESSAGE_LENGTH) {
 
 const entries = await readEntries();
 const date = new Date().toISOString();
+const tags = normalizeTags(readTextFlags("tag"));
 
 entries.push({
   id: createEntryId(date),
   date,
   message,
+  tags,
 });
 
 await writeEntries(entries);
