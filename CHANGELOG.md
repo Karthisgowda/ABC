@@ -8,6 +8,7 @@
 - Added activity message search with smoke test coverage.
 - Added activity tags across logging, search, stats, CSV, JSON, and dashboard output.
 - Added tag totals reporting.
+- Added date range filters for activity listing, search, stats, dashboard, and exports.
 - Added CLI version output and related npm shortcut.
 - Added daily summaries, recent listing improvements, and stronger input checks.
 - Improved CSV escaping for activity and grid exports.

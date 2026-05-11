@@ -55,6 +55,13 @@ npm run search -- --search=project
 
 Search also checks tags, so `--search=review` finds entries tagged with `review`.
 
+Filter activity commands by date:
+
+```bash
+npm run list -- --since=2026-01-01 --until=2026-01-31
+npm run stats -- --since=2026-01-01
+```
+
 Show tag totals:
 
 ```bash

@@ -21,6 +21,9 @@ to merge that backup back into the current log.
 CSV export stores tags in the `tags` column separated by semicolons, and CSV
 import restores those tags when the column is present.
 
+Most activity reports accept `--since=YYYY-MM-DD` and `--until=YYYY-MM-DD` to
+limit output to a date range before exporting or summarizing data.
+
 ## Grid Reports
 
 - `contribution-grid.csv` contains one row per grid box.
