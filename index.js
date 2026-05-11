@@ -24,6 +24,7 @@ const commands = [
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --list --since=YYYY-MM-DD Print entries from a date",
   "node index.js --search=term     Search activity messages",
+  "node index.js --list --tag=work Filter entries by tag",
   "node index.js --days            Show entries grouped by day",
   "node index.js --tags            Show tag totals",
   "node index.js --stats           Show activity totals",
@@ -236,6 +237,23 @@ function filterEntriesByDateRange(entries) {
   });
 }
 
+function filterEntriesByTags(entries) {
+  const filterTags = normalizeTags(readTextFlags("tag"));
+
+  if (filterTags.length === 0) {
+    return entries;
+  }
+
+  return entries.filter((entry) => {
+    const entryTags = new Set(entry.tags ?? []);
+    return filterTags.every((tag) => entryTags.has(tag));
+  });
+}
+
+function filterEntries(entries) {
+  return filterEntriesByTags(filterEntriesByDateRange(entries));
+}
+
 function countTags(entries) {
   const totals = new Map();
 
@@ -389,7 +407,7 @@ if (args.includes("--check")) {
 
 if (args.includes("--list")) {
   const recent = readNumberFlag("recent", 0);
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const visibleEntries = recent > 0 ? entries.slice(-recent) : entries;
 
   if (visibleEntries.length === 0) {
@@ -408,7 +426,7 @@ if (args.includes("--list")) {
 const searchTerm = readTextFlag("search");
 
 if (searchTerm) {
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const matches = entries.filter((entry) => {
     const haystack = [entry.message, ...(entry.tags ?? [])].join(" ").toLowerCase();
     return haystack.includes(searchTerm.toLowerCase());
@@ -428,7 +446,7 @@ if (searchTerm) {
 }
 
 if (args.includes("--days")) {
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const totals = new Map();
 
   for (const entry of entries) {
@@ -448,7 +466,7 @@ if (args.includes("--days")) {
 }
 
 if (args.includes("--tags")) {
-  const tagTotals = countTags(filterEntriesByDateRange(await readEntries()));
+  const tagTotals = countTags(filterEntries(await readEntries()));
 
   if (tagTotals.length === 0) {
     console.log("No tags found.");
@@ -463,7 +481,7 @@ if (args.includes("--tags")) {
 }
 
 if (args.includes("--stats")) {
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const days = new Set(entries.map((entry) => toDateKey(entry.date)));
   const messages = entries.filter((entry) => entry.message).length;
   const tags = new Set(entries.flatMap((entry) => entry.tags ?? []));
@@ -488,7 +506,7 @@ if (args.includes("--today")) {
 }
 
 if (args.includes("--summary-json")) {
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const days = new Set(entries.map((entry) => toDateKey(entry.date)));
   const summary = {
     entries: entries.length,
@@ -504,7 +522,7 @@ if (args.includes("--summary-json")) {
 }
 
 if (args.includes("--dashboard")) {
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const grid = await readGrid();
   await writeFile(DASHBOARD_PATH, renderDashboardHtml(entries, grid));
   console.log("Exported dashboard.html");
@@ -512,7 +530,7 @@ if (args.includes("--dashboard")) {
 }
 
 if (args.includes("--export-csv")) {
-  const entries = filterEntriesByDateRange(await readEntries());
+  const entries = filterEntries(await readEntries());
   const rows = ["id,date,message,tags"];
 
   for (const entry of entries) {
