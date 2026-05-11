@@ -93,6 +93,12 @@ try {
           message: "Searchable activity entry",
           tags: ["review", "docs"],
         },
+        {
+          id: "older-test",
+          date: "2025-12-25T00:00:00.000Z",
+          message: "Older activity entry",
+          tags: ["archive"],
+        },
       ],
       null,
       2,
@@ -129,7 +135,22 @@ try {
     throw new Error("Expected recent list to include tags");
   }
 
-  console.log(`Passed ${checks.length + 10} CLI checks`);
+  const sinceOutput = run(["--list", "--since=2026-01-01"]);
+  if (!sinceOutput.includes("Searchable activity entry") || sinceOutput.includes("Older activity entry")) {
+    throw new Error("Expected --since to filter older entries");
+  }
+
+  const untilOutput = run(["--search=older", "--until=2025-12-31"]);
+  if (!untilOutput.includes("Older activity entry")) {
+    throw new Error("Expected --until to include matching older entries");
+  }
+
+  const rangedStatsOutput = run(["--stats", "--since=2026-01-01"]);
+  if (!rangedStatsOutput.includes("Entries: 2")) {
+    throw new Error("Expected date-filtered stats to count filtered entries");
+  }
+
+  console.log(`Passed ${checks.length + 13} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
