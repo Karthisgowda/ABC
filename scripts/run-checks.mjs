@@ -150,7 +150,17 @@ try {
     throw new Error("Expected date-filtered stats to count filtered entries");
   }
 
-  console.log(`Passed ${checks.length + 13} CLI checks`);
+  const tagFilteredListOutput = run(["--list", "--tag=archive"]);
+  if (!tagFilteredListOutput.includes("Older activity entry") || tagFilteredListOutput.includes("Searchable activity entry")) {
+    throw new Error("Expected tag-filtered list to include only archive entries");
+  }
+
+  const tagFilteredStatsOutput = run(["--stats", "--tag=review"]);
+  if (!tagFilteredStatsOutput.includes("Entries: 2")) {
+    throw new Error("Expected tag-filtered stats to count review entries");
+  }
+
+  console.log(`Passed ${checks.length + 15} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
