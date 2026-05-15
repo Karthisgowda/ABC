@@ -18,6 +18,7 @@ function run(args) {
 
 const checks = [
   { args: ["--check"], expected: "Activity log is valid" },
+  { args: ["--count"], expected: "Entries:" },
   { args: ["--stats"], expected: "Entries:" },
   { args: ["--days"], expected: "No activity days found." },
   { args: ["--today"], expected: "Entries today:" },
