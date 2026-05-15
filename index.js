@@ -33,6 +33,7 @@ const commands = [
   "node index.js --stats           Show activity totals",
   "node index.js --stats-json      Print activity totals as JSON",
   "node index.js --count           Show filtered activity count",
+  "node index.js --latest          Show the latest filtered entry",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
   "node index.js --dashboard       Export a local HTML dashboard",
@@ -573,6 +574,19 @@ if (args.includes("--stats-json")) {
 if (args.includes("--count")) {
   const entries = filterEntries(await readEntries());
   console.log(`Entries: ${entries.length}`);
+  process.exit(0);
+}
+
+if (args.includes("--latest")) {
+  const latest = filterEntries(await readEntries()).at(-1);
+
+  if (!latest) {
+    console.log("No activity entries found.");
+    process.exit(0);
+  }
+
+  const tags = latest.tags?.length ? ` [${latest.tags.map((tag) => `#${tag}`).join(" ")}]` : "";
+  console.log(`${latest.date}  ${latest.message}${tags}`);
   process.exit(0);
 }
 
