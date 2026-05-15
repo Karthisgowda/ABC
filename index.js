@@ -44,6 +44,7 @@ const commands = [
   "node index.js --grid-csv        Export local grid boxes to CSV",
   "node index.js --grid-markdown   Export local grid summary markdown",
   "node index.js --grid-stats      Show local grid totals",
+  "node index.js --grid-check      Validate local grid data",
   "node index.js --version         Show the CLI version",
   "node index.js --help            Show this help",
 ];
@@ -668,6 +669,25 @@ if (args.includes("--grid-stats")) {
   console.log(`Grid boxes: ${grid.length}`);
   console.log(`Grid total: ${total}`);
   console.log(`Grid average: ${average.toFixed(2)}`);
+  process.exit(0);
+}
+
+if (args.includes("--grid-check")) {
+  const grid = await readGrid();
+  const invalidBoxes = grid.filter((box) => {
+    return (
+      !Number.isInteger(box.week) ||
+      !Number.isInteger(box.day) ||
+      !isDateKey(String(box.date ?? "")) ||
+      !Number.isInteger(Number(box.count))
+    );
+  });
+
+  if (invalidBoxes.length > 0) {
+    throw new Error(`Grid has ${invalidBoxes.length} invalid boxes`);
+  }
+
+  console.log(`Grid is valid. Boxes: ${grid.length}`);
   process.exit(0);
 }
 
