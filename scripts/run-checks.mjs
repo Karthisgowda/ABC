@@ -136,6 +136,12 @@ try {
     throw new Error("Expected recent list to include tags");
   }
 
+  const listJsonOutput = run(["--list-json", "--tag=work"]);
+  const listJsonEntries = JSON.parse(listJsonOutput);
+  if (listJsonEntries.length !== 1 || listJsonEntries[0].message !== "Tagged test entry") {
+    throw new Error("Expected JSON list to include the tagged fixture entry");
+  }
+
   const sinceOutput = run(["--list", "--since=2026-01-01"]);
   if (!sinceOutput.includes("Searchable activity entry") || sinceOutput.includes("Older activity entry")) {
     throw new Error("Expected --since to filter older entries");
@@ -179,7 +185,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 17} CLI checks`);
+  console.log(`Passed ${checks.length + 18} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
