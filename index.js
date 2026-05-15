@@ -5,6 +5,7 @@ const GRID_PATH = new URL("./contribution-grid.json", import.meta.url);
 const CSV_PATH = new URL("./activity-log.csv", import.meta.url);
 const GRID_CSV_PATH = new URL("./contribution-grid.csv", import.meta.url);
 const GRID_MARKDOWN_PATH = new URL("./grid-summary.md", import.meta.url);
+const ACTIVITY_MARKDOWN_PATH = new URL("./activity-summary.md", import.meta.url);
 const DASHBOARD_PATH = new URL("./dashboard.html", import.meta.url);
 const SUMMARY_PATH = new URL("./activity-summary.json", import.meta.url);
 const BACKUP_PATH = new URL("./activity-backup.json", import.meta.url);
@@ -39,6 +40,7 @@ const commands = [
   "node index.js --ids             Show filtered entry IDs",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
+  "node index.js --summary-md      Export activity summary markdown",
   "node index.js --dashboard       Export a local HTML dashboard",
   "node index.js --export-csv      Export activity entries to CSV",
   "node index.js --import-csv      Import entries from activity-log.csv",
@@ -642,6 +644,23 @@ if (args.includes("--summary-json")) {
 
   await writeFile(SUMMARY_PATH, `${JSON.stringify(summary, null, 2)}\n`);
   console.log("Exported activity-summary.json");
+  process.exit(0);
+}
+
+if (args.includes("--summary-md")) {
+  const entries = filterEntries(await readEntries());
+  const days = new Set(entries.map((entry) => toDateKey(entry.date)));
+  const latest = entries.at(-1)?.date ?? "none";
+  const markdown = `# Activity Summary
+
+- Entries: ${entries.length}
+- Active days: ${days.size}
+- Latest entry: ${latest}
+- Generated: ${new Date().toISOString()}
+`;
+
+  await writeFile(ACTIVITY_MARKDOWN_PATH, markdown);
+  console.log("Exported activity-summary.md");
   process.exit(0);
 }
 
