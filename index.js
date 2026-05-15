@@ -27,6 +27,7 @@ const commands = [
   "node index.js --list --month=YYYY-MM Print entries from a month",
   "node index.js --search=term     Search activity messages",
   "node index.js --list --tag=work Filter entries by tag",
+  "node index.js --list --untagged Show entries without tags",
   "node index.js --days            Show entries grouped by day",
   "node index.js --days-json       Print day totals as JSON",
   "node index.js --tags            Show tag totals",
@@ -265,14 +266,15 @@ function filterEntriesByDateRange(entries) {
 
 function filterEntriesByTags(entries) {
   const filterTags = normalizeTags(readTextFlags("tag"));
+  const onlyUntagged = args.includes("--untagged");
 
-  if (filterTags.length === 0) {
+  if (filterTags.length === 0 && !onlyUntagged) {
     return entries;
   }
 
   return entries.filter((entry) => {
     const entryTags = new Set(entry.tags ?? []);
-    return filterTags.every((tag) => entryTags.has(tag));
+    return (!onlyUntagged || entryTags.size === 0) && filterTags.every((tag) => entryTags.has(tag));
   });
 }
 
