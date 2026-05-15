@@ -71,6 +71,12 @@ Show the latest filtered entry:
 npm run latest -- --tag=review
 ```
 
+Show matching entry IDs:
+
+```bash
+npm run ids -- --tag=review
+```
+
 List filtered entries as JSON:
 
 ```bash

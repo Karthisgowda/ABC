@@ -8,6 +8,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run log -- "message" --tag=work` records an entry with one or more tags.
 - `npm run list` prints all entries.
 - `npm run latest` prints the latest entry after any active filters.
+- `npm run ids` prints matching entry IDs after any active filters.
 - `npm run list-json` prints filtered entries as JSON.
 - `npm run list -- --recent=5` prints the latest five entries.
 - `npm run list -- --since=YYYY-MM-DD --until=YYYY-MM-DD` filters entries by date.
