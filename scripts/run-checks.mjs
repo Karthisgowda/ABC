@@ -171,6 +171,11 @@ try {
     throw new Error("Expected --since to filter older entries");
   }
 
+  const monthOutput = run(["--list", "--month=2025-12"]);
+  if (!monthOutput.includes("Older activity entry") || monthOutput.includes("Searchable activity entry")) {
+    throw new Error("Expected --month to filter entries by month");
+  }
+
   const untilOutput = run(["--search=older", "--until=2025-12-31"]);
   if (!untilOutput.includes("Older activity entry")) {
     throw new Error("Expected --until to include matching older entries");
@@ -209,7 +214,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 22} CLI checks`);
+  console.log(`Passed ${checks.length + 23} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
