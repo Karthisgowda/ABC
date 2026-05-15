@@ -65,6 +65,12 @@ List entries:
 npm run list
 ```
 
+Show the latest filtered entry:
+
+```bash
+npm run latest -- --tag=review
+```
+
 List filtered entries as JSON:
 
 ```bash
