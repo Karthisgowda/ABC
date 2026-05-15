@@ -167,6 +167,7 @@ This writes `contribution-grid.json` for previews or planning. It does not creat
 Review the generated grid totals:
 
 ```bash
+npm run grid-check
 npm run grid-stats
 ```
 

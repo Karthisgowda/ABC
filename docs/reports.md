@@ -33,3 +33,5 @@ are provided, entries must include all requested tags.
 - `grid-summary.md` contains a short Markdown summary of the grid totals.
 
 Run all report exports manually when you need fresh local output.
+Use `npm run grid-check` before sharing grid reports to confirm every local box
+has a week, day, date, and count.

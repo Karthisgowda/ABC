@@ -38,6 +38,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 ## Grid
 
 - `npm run generate-grid` creates local grid sample data.
+- `npm run grid-check` validates local grid sample data.
 - `npm run grid-stats` prints grid totals.
 - `npm run grid-csv` writes `contribution-grid.csv`.
 - `npm run grid-markdown` writes `grid-summary.md`.
