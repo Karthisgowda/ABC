@@ -35,6 +35,12 @@ View activity totals:
 npm run stats
 ```
 
+Export activity totals as JSON:
+
+```bash
+npm run stats-json -- --since=2026-01-01
+```
+
 Count filtered entries:
 
 ```bash
