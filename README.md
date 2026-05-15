@@ -93,6 +93,12 @@ Show tag totals:
 npm run tags
 ```
 
+Export tag totals as JSON:
+
+```bash
+npm run tags-json
+```
+
 Export the log:
 
 ```bash
