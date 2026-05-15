@@ -28,6 +28,7 @@ const commands = [
   "node index.js --days            Show entries grouped by day",
   "node index.js --tags            Show tag totals",
   "node index.js --stats           Show activity totals",
+  "node index.js --count           Show filtered activity count",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
   "node index.js --dashboard       Export a local HTML dashboard",
@@ -506,6 +507,12 @@ if (args.includes("--stats")) {
   console.log(`Messages: ${messages}`);
   console.log(`Tags: ${tags.size}`);
   console.log(`Latest entry: ${latest}`);
+  process.exit(0);
+}
+
+if (args.includes("--count")) {
+  const entries = filterEntries(await readEntries());
+  console.log(`Entries: ${entries.length}`);
   process.exit(0);
 }
 
