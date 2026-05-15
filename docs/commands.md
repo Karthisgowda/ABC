@@ -14,6 +14,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run list -- --month=YYYY-MM` filters entries to a single month.
 - Date ranges must use `YYYY-MM-DD`, and `--since` cannot be later than `--until`.
 - `npm run list -- --tag=work` filters entries by tag.
+- `npm run list -- --untagged` filters entries without tags.
 - `npm run search -- --search=term` searches activity messages.
 - Search also matches tags.
 - `npm run days` groups entries by date.
