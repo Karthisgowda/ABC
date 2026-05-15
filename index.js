@@ -641,7 +641,7 @@ if (args.includes("--grid-markdown")) {
   process.exit(0);
 }
 
-const message = normalizeMessage(args.join(" ")) || "Worked on ABC";
+const message = normalizeMessage(args.filter((arg) => !arg.startsWith("--")).join(" ")) || "Worked on ABC";
 
 if (message.length > MAX_MESSAGE_LENGTH) {
   throw new Error(`Activity message must be ${MAX_MESSAGE_LENGTH} characters or fewer`);

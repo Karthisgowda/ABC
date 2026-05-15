@@ -117,7 +117,7 @@ try {
   }
 
   const statsOutput = run(["--stats"]);
-  if (!statsOutput.includes("Tags: 2")) {
+  if (!statsOutput.includes("Tags: 3")) {
     throw new Error("Expected stats to count unique tags");
   }
 

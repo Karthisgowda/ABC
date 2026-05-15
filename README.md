@@ -53,6 +53,12 @@ List entries:
 npm run list
 ```
 
+List filtered entries as JSON:
+
+```bash
+npm run list-json -- --recent=5
+```
+
 Search entries:
 
 ```bash
