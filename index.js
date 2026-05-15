@@ -27,6 +27,7 @@ const commands = [
   "node index.js --search=term     Search activity messages",
   "node index.js --list --tag=work Filter entries by tag",
   "node index.js --days            Show entries grouped by day",
+  "node index.js --days-json       Print day totals as JSON",
   "node index.js --tags            Show tag totals",
   "node index.js --tags-json       Print tag totals as JSON",
   "node index.js --stats           Show activity totals",
@@ -493,6 +494,20 @@ if (args.includes("--days")) {
     console.log("No activity days found.");
   }
 
+  process.exit(0);
+}
+
+if (args.includes("--days-json")) {
+  const entries = filterEntries(await readEntries());
+  const totals = new Map();
+
+  for (const entry of entries) {
+    const day = toDateKey(entry.date);
+    totals.set(day, (totals.get(day) ?? 0) + 1);
+  }
+
+  const days = [...totals.entries()].map(([date, count]) => ({ date, count }));
+  console.log(JSON.stringify(days, null, 2));
   process.exit(0);
 }
 
