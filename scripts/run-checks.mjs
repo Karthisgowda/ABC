@@ -154,6 +154,11 @@ try {
     throw new Error("Expected recent list to include tags");
   }
 
+  const latestOutput = run(["--latest"]);
+  if (!latestOutput.includes("Tagged test entry") || !latestOutput.includes("#work")) {
+    throw new Error("Expected latest command to show the newest tagged entry");
+  }
+
   const listJsonOutput = run(["--list-json", "--tag=work"]);
   const listJsonEntries = JSON.parse(listJsonOutput);
   if (listJsonEntries.length !== 1 || listJsonEntries[0].message !== "Tagged test entry") {
@@ -203,7 +208,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 21} CLI checks`);
+  console.log(`Passed ${checks.length + 22} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
