@@ -94,6 +94,11 @@ function readNumberFlag(name, defaultValue) {
   return Number.isInteger(parsed) ? parsed : defaultValue;
 }
 
+function hasValueFlag(name) {
+  const prefix = `--${name}=`;
+  return args.some((arg) => arg.startsWith(prefix));
+}
+
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -411,6 +416,11 @@ if (args.includes("--check")) {
 
 if (args.includes("--list")) {
   const recent = readNumberFlag("recent", 0);
+
+  if (hasValueFlag("recent")) {
+    requirePositiveInteger("recent", recent);
+  }
+
   const entries = filterEntries(await readEntries());
   const visibleEntries = recent > 0 ? entries.slice(-recent) : entries;
 
