@@ -150,6 +150,15 @@ try {
     throw new Error("Expected date-filtered stats to count filtered entries");
   }
 
+  try {
+    run(["--list", "--since=2026-02-01", "--until=2026-01-01"]);
+    throw new Error("Expected reversed date range to fail");
+  } catch (error) {
+    if (!String(error.stderr).includes("--since must be earlier than or equal to --until")) {
+      throw error;
+    }
+  }
+
   const tagFilteredListOutput = run(["--list", "--tag=archive"]);
   if (!tagFilteredListOutput.includes("Older activity entry") || tagFilteredListOutput.includes("Searchable activity entry")) {
     throw new Error("Expected tag-filtered list to include only archive entries");
@@ -160,7 +169,7 @@ try {
     throw new Error("Expected tag-filtered stats to count review entries");
   }
 
-  console.log(`Passed ${checks.length + 15} CLI checks`);
+  console.log(`Passed ${checks.length + 16} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
