@@ -98,6 +98,7 @@ Filter by tag:
 ```bash
 npm run list -- --tag=review
 npm run dashboard -- --tag=docs
+npm run list -- --untagged
 ```
 
 Show tag totals:
