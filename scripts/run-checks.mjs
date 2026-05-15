@@ -166,6 +166,11 @@ try {
     throw new Error("Expected latest command to show the newest tagged entry");
   }
 
+  const idsOutput = run(["--ids", "--tag=archive"]);
+  if (!idsOutput.trim().split(/\r?\n/).includes("older-test")) {
+    throw new Error("Expected IDs command to print matching entry IDs");
+  }
+
   const listJsonOutput = run(["--list-json", "--tag=work"]);
   const listJsonEntries = JSON.parse(listJsonOutput);
   if (listJsonEntries.length !== 1 || listJsonEntries[0].message !== "Tagged test entry") {
@@ -225,7 +230,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 24} CLI checks`);
+  console.log(`Passed ${checks.length + 25} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
