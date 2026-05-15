@@ -132,6 +132,12 @@ try {
     throw new Error("Expected tag totals to include fixture tags");
   }
 
+  const tagsJsonOutput = run(["--tags-json"]);
+  const tagsJson = JSON.parse(tagsJsonOutput);
+  if (!tagsJson.some((item) => item.tag === "review" && item.count === 1)) {
+    throw new Error("Expected JSON tag totals to include fixture tags");
+  }
+
   const logOutput = run(["Tagged test entry", "--tag=work", "--tag=review"]);
   if (!logOutput.includes("Logged activity")) {
     throw new Error("Expected tagged log command to complete");
@@ -191,7 +197,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 19} CLI checks`);
+  console.log(`Passed ${checks.length + 20} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
