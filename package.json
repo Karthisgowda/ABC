@@ -8,6 +8,7 @@
     "backup-json": "node index.js --backup-json",
     "count": "node index.js --count",
     "days": "node index.js --days",
+    "days-json": "node index.js --days-json",
     "dashboard": "node index.js --dashboard",
     "export-csv": "node index.js --export-csv",
     "generate-grid": "node index.js --generate-grid",
