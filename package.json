@@ -22,6 +22,7 @@
     "search": "node index.js",
     "summary-json": "node index.js --summary-json",
     "tags": "node index.js --tags",
+    "tags-json": "node index.js --tags-json",
     "stats": "node index.js --stats",
     "stats-json": "node index.js --stats-json",
     "today": "node index.js --today",
