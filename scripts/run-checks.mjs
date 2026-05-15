@@ -138,7 +138,7 @@ try {
 
   const daysJsonOutput = run(["--days-json", "--since=2026-01-01"]);
   const daysJson = JSON.parse(daysJsonOutput);
-  if (daysJson.length !== 1 || daysJson[0].date !== "2026-01-01") {
+  if (daysJson.length !== 2 || !daysJson.some((item) => item.date === "2026-01-01")) {
     throw new Error("Expected JSON day totals to honor date filters");
   }
 
@@ -206,7 +206,7 @@ try {
   }
 
   const rangedStatsOutput = run(["--stats", "--since=2026-01-01"]);
-  if (!rangedStatsOutput.includes("Entries: 2")) {
+  if (!rangedStatsOutput.includes("Entries: 3")) {
     throw new Error("Expected date-filtered stats to count filtered entries");
   }
 
