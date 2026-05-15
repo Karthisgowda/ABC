@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "backup-json": "node index.js --backup-json",
+    "count": "node index.js --count",
     "days": "node index.js --days",
     "dashboard": "node index.js --dashboard",
     "export-csv": "node index.js --export-csv",
