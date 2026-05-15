@@ -121,6 +121,12 @@ try {
     throw new Error("Expected stats to count unique tags");
   }
 
+  const daysJsonOutput = run(["--days-json", "--since=2026-01-01"]);
+  const daysJson = JSON.parse(daysJsonOutput);
+  if (daysJson.length !== 1 || daysJson[0].date !== "2026-01-01") {
+    throw new Error("Expected JSON day totals to honor date filters");
+  }
+
   const statsJsonOutput = run(["--stats-json", "--tag=review"]);
   const statsJson = JSON.parse(statsJsonOutput);
   if (statsJson.entries !== 1 || statsJson.tags !== 2) {
@@ -197,7 +203,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 20} CLI checks`);
+  console.log(`Passed ${checks.length + 21} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
