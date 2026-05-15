@@ -35,6 +35,12 @@ View activity totals:
 npm run stats
 ```
 
+Count filtered entries:
+
+```bash
+npm run count -- --tag=review
+```
+
 Show only today's activity:
 
 ```bash

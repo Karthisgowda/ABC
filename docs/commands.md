@@ -20,6 +20,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 ## Reports
 
 - `npm run backup-json` writes `activity-backup.json`.
+- `npm run count` prints the number of entries after any active filters.
 - `npm run stats` prints activity totals.
 - `npm run stats -- --since=YYYY-MM-DD` prints totals for a date range.
 - `npm run stats -- --tag=work` prints totals for a tag.
