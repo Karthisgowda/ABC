@@ -16,6 +16,7 @@
     "grid-stats": "node index.js --grid-stats",
     "import-csv": "node index.js --import-csv",
     "list": "node index.js --list",
+    "list-json": "node index.js --list-json",
     "log": "node index.js",
     "restore-json": "node index.js --restore-json",
     "search": "node index.js",
