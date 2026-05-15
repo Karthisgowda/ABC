@@ -121,6 +121,12 @@ try {
     throw new Error("Expected stats to count unique tags");
   }
 
+  const statsJsonOutput = run(["--stats-json", "--tag=review"]);
+  const statsJson = JSON.parse(statsJsonOutput);
+  if (statsJson.entries !== 1 || statsJson.tags !== 2) {
+    throw new Error("Expected JSON stats to honor tag filters");
+  }
+
   const tagsOutput = run(["--tags"]);
   if (!tagsOutput.includes("#review: 1") || !tagsOutput.includes("#docs: 1")) {
     throw new Error("Expected tag totals to include fixture tags");
@@ -185,7 +191,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 18} CLI checks`);
+  console.log(`Passed ${checks.length + 19} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
