@@ -23,6 +23,7 @@
     "summary-json": "node index.js --summary-json",
     "tags": "node index.js --tags",
     "stats": "node index.js --stats",
+    "stats-json": "node index.js --stats-json",
     "today": "node index.js --today",
     "test": "node scripts/run-checks.mjs",
     "version:cli": "node index.js --version"
