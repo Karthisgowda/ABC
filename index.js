@@ -28,6 +28,7 @@ const commands = [
   "node index.js --list --tag=work Filter entries by tag",
   "node index.js --days            Show entries grouped by day",
   "node index.js --tags            Show tag totals",
+  "node index.js --tags-json       Print tag totals as JSON",
   "node index.js --stats           Show activity totals",
   "node index.js --stats-json      Print activity totals as JSON",
   "node index.js --count           Show filtered activity count",
@@ -507,6 +508,13 @@ if (args.includes("--tags")) {
     console.log(`#${tag}: ${count}`);
   }
 
+  process.exit(0);
+}
+
+if (args.includes("--tags-json")) {
+  const tagTotals = countTags(filterEntries(await readEntries()));
+  const tags = tagTotals.map(([tag, count]) => ({ tag, count }));
+  console.log(JSON.stringify(tags, null, 2));
   process.exit(0);
 }
 
