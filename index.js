@@ -26,6 +26,7 @@ const commands = [
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --list --since=YYYY-MM-DD Print entries from a date",
   "node index.js --list --month=YYYY-MM Print entries from a month",
+  "node index.js --list --week    Print entries from the current week",
   "node index.js --search=term     Search activity messages",
   "node index.js --list --tag=work Filter entries by tag",
   "node index.js --list --untagged Show entries without tags",
@@ -240,10 +241,19 @@ function isMonthKey(value) {
   return /^\d{4}-\d{2}$/.test(value);
 }
 
+function startOfCurrentWeek() {
+  const now = new Date();
+  const day = now.getUTCDay();
+  const diff = day === 0 ? 6 : day - 1;
+  now.setUTCDate(now.getUTCDate() - diff);
+  return now.toISOString().slice(0, 10);
+}
+
 function filterEntriesByDateRange(entries) {
   const since = readTextFlag("since");
   const until = readTextFlag("until");
   const month = readTextFlag("month");
+  const weekStart = args.includes("--week") ? startOfCurrentWeek() : "";
 
   if (month && !isMonthKey(month)) {
     throw new Error("--month must use YYYY-MM format");
@@ -263,7 +273,12 @@ function filterEntriesByDateRange(entries) {
 
   return entries.filter((entry) => {
     const day = toDateKey(entry.date);
-    return (!month || day.startsWith(month)) && (!since || day >= since) && (!until || day <= until);
+    return (
+      (!month || day.startsWith(month)) &&
+      (!weekStart || day >= weekStart) &&
+      (!since || day >= since) &&
+      (!until || day <= until)
+    );
   });
 }
 
