@@ -231,6 +231,10 @@ function filterEntriesByDateRange(entries) {
     throw new Error("--until must use YYYY-MM-DD format");
   }
 
+  if (since && until && since > until) {
+    throw new Error("--since must be earlier than or equal to --until");
+  }
+
   return entries.filter((entry) => {
     const day = toDateKey(entry.date);
     return (!since || day >= since) && (!until || day <= until);
