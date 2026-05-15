@@ -29,6 +29,7 @@ const commands = [
   "node index.js --days            Show entries grouped by day",
   "node index.js --tags            Show tag totals",
   "node index.js --stats           Show activity totals",
+  "node index.js --stats-json      Print activity totals as JSON",
   "node index.js --count           Show filtered activity count",
   "node index.js --today           Show today activity count",
   "node index.js --summary-json    Export activity summary JSON",
@@ -521,6 +522,28 @@ if (args.includes("--stats")) {
   console.log(`Messages: ${messages}`);
   console.log(`Tags: ${tags.size}`);
   console.log(`Latest entry: ${latest}`);
+  process.exit(0);
+}
+
+if (args.includes("--stats-json")) {
+  const entries = filterEntries(await readEntries());
+  const days = new Set(entries.map((entry) => toDateKey(entry.date)));
+  const messages = entries.filter((entry) => entry.message).length;
+  const tags = new Set(entries.flatMap((entry) => entry.tags ?? []));
+
+  console.log(
+    JSON.stringify(
+      {
+        entries: entries.length,
+        activeDays: days.size,
+        messages,
+        tags: tags.size,
+        latestEntry: entries.at(-1)?.date ?? null,
+      },
+      null,
+      2,
+    ),
+  );
   process.exit(0);
 }
 
