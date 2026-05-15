@@ -142,6 +142,7 @@ Export a summary file:
 
 ```bash
 npm run summary-json
+npm run summary-md
 ```
 
 Generate a local dashboard:

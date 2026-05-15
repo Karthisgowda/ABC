@@ -8,6 +8,7 @@ exports.
 - `activity-backup.json` contains a restorable copy of all activity entries.
 - `activity-log.csv` contains one row per activity entry.
 - `activity-summary.json` contains total entries, active days, and latest entry.
+- `activity-summary.md` contains a short Markdown summary for notes or reviews.
 - `dashboard.html` contains a local browser dashboard for activity and grid data.
 - Dashboard recent entries include tags when an entry has them.
 

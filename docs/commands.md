@@ -37,6 +37,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run import-csv` merges entries from `activity-log.csv` into `data.json`.
 - `npm run restore-json` merges entries from `activity-backup.json` into `data.json`.
 - `npm run summary-json` writes `activity-summary.json`.
+- `npm run summary-md` writes `activity-summary.md`.
 
 ## Grid
 
