@@ -101,6 +101,12 @@ try {
           message: "Older activity entry",
           tags: ["archive"],
         },
+        {
+          id: "untagged-test",
+          date: "2026-01-02T00:00:00.000Z",
+          message: "Untagged activity entry",
+          tags: [],
+        },
       ],
       null,
       2,
@@ -200,6 +206,11 @@ try {
     throw new Error("Expected tag-filtered list to include only archive entries");
   }
 
+  const untaggedOutput = run(["--list", "--untagged"]);
+  if (!untaggedOutput.includes("Untagged activity entry") || untaggedOutput.includes("Searchable activity entry")) {
+    throw new Error("Expected untagged filter to include only entries without tags");
+  }
+
   const tagFilteredStatsOutput = run(["--stats", "--tag=review"]);
   if (!tagFilteredStatsOutput.includes("Entries: 2")) {
     throw new Error("Expected tag-filtered stats to count review entries");
@@ -214,7 +225,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 23} CLI checks`);
+  console.log(`Passed ${checks.length + 24} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
