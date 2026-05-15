@@ -11,6 +11,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run list-json` prints filtered entries as JSON.
 - `npm run list -- --recent=5` prints the latest five entries.
 - `npm run list -- --since=YYYY-MM-DD --until=YYYY-MM-DD` filters entries by date.
+- `npm run list -- --month=YYYY-MM` filters entries to a single month.
 - Date ranges must use `YYYY-MM-DD`, and `--since` cannot be later than `--until`.
 - `npm run list -- --tag=work` filters entries by tag.
 - `npm run search -- --search=term` searches activity messages.
