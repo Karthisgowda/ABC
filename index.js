@@ -21,6 +21,7 @@ const commands = [
   "npm run generate-grid           Create a local random contribution grid",
   "node index.js --check           Validate the activity log",
   "node index.js --list            Print activity entries",
+  "node index.js --list-json       Print filtered entries as JSON",
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --list --since=YYYY-MM-DD Print entries from a date",
   "node index.js --search=term     Search activity messages",
@@ -435,6 +436,19 @@ if (args.includes("--list")) {
     console.log(`${entry.date}  ${entry.message}${tags}`);
   }
 
+  process.exit(0);
+}
+
+if (args.includes("--list-json")) {
+  const recent = readNumberFlag("recent", 0);
+
+  if (hasValueFlag("recent")) {
+    requirePositiveInteger("recent", recent);
+  }
+
+  const entries = filterEntries(await readEntries());
+  const visibleEntries = recent > 0 ? entries.slice(-recent) : entries;
+  console.log(JSON.stringify(visibleEntries, null, 2));
   process.exit(0);
 }
 
