@@ -24,6 +24,7 @@ const commands = [
   "node index.js --list-json       Print filtered entries as JSON",
   "node index.js --list --recent=5 Print the latest activity entries",
   "node index.js --list --since=YYYY-MM-DD Print entries from a date",
+  "node index.js --list --month=YYYY-MM Print entries from a month",
   "node index.js --search=term     Search activity messages",
   "node index.js --list --tag=work Filter entries by tag",
   "node index.js --days            Show entries grouped by day",
@@ -231,9 +232,18 @@ function isDateKey(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
 
+function isMonthKey(value) {
+  return /^\d{4}-\d{2}$/.test(value);
+}
+
 function filterEntriesByDateRange(entries) {
   const since = readTextFlag("since");
   const until = readTextFlag("until");
+  const month = readTextFlag("month");
+
+  if (month && !isMonthKey(month)) {
+    throw new Error("--month must use YYYY-MM format");
+  }
 
   if (since && !isDateKey(since)) {
     throw new Error("--since must use YYYY-MM-DD format");
@@ -249,7 +259,7 @@ function filterEntriesByDateRange(entries) {
 
   return entries.filter((entry) => {
     const day = toDateKey(entry.date);
-    return (!since || day >= since) && (!until || day <= until);
+    return (!month || day.startsWith(month)) && (!since || day >= since) && (!until || day <= until);
   });
 }
 
