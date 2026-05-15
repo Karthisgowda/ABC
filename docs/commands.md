@@ -8,6 +8,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run log -- "message" --tag=work` records an entry with one or more tags.
 - `npm run list` prints all entries.
 - `npm run list -- --since=YYYY-MM-DD --until=YYYY-MM-DD` filters entries by date.
+- Date ranges must use `YYYY-MM-DD`, and `--since` cannot be later than `--until`.
 - `npm run list -- --tag=work` filters entries by tag.
 - `npm run search -- --search=term` searches activity messages.
 - Search also matches tags.
