@@ -169,7 +169,16 @@ try {
     throw new Error("Expected tag-filtered stats to count review entries");
   }
 
-  console.log(`Passed ${checks.length + 16} CLI checks`);
+  try {
+    run(["--list", "--recent=0"]);
+    throw new Error("Expected invalid recent limit to fail");
+  } catch (error) {
+    if (!String(error.stderr).includes("--recent must be a positive integer")) {
+      throw error;
+    }
+  }
+
+  console.log(`Passed ${checks.length + 17} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
