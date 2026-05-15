@@ -53,6 +53,12 @@ Show only today's activity:
 npm run today
 ```
 
+Export day totals as JSON:
+
+```bash
+npm run days-json
+```
+
 List entries:
 
 ```bash

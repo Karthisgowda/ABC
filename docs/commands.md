@@ -15,6 +15,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run search -- --search=term` searches activity messages.
 - Search also matches tags.
 - `npm run days` groups entries by date.
+- `npm run days-json` groups entries by date as JSON.
 - `npm run tags` prints tag usage totals.
 - `npm run tags-json` prints tag usage totals as JSON.
 - `npm run today` prints the current date and today's entry count.
