@@ -96,6 +96,7 @@ Filter activity commands by date:
 ```bash
 npm run list -- --since=2026-01-01 --until=2026-01-31
 npm run list -- --month=2026-01
+npm run list -- --week
 npm run stats -- --since=2026-01-01
 ```
 
