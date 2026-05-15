@@ -12,6 +12,7 @@
     "dashboard": "node index.js --dashboard",
     "export-csv": "node index.js --export-csv",
     "generate-grid": "node index.js --generate-grid",
+    "grid-check": "node index.js --grid-check",
     "grid-csv": "node index.js --grid-csv",
     "grid-markdown": "node index.js --grid-markdown",
     "grid-stats": "node index.js --grid-stats",
