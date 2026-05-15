@@ -5,9 +5,11 @@ const node = process.execPath;
 const dataPath = "data.json";
 const csvPath = "activity-log.csv";
 const backupJsonPath = "activity-backup.json";
+const summaryMarkdownPath = "activity-summary.md";
 const dataBackupPath = "data.json.test-backup";
 const csvBackupPath = "activity-log.csv.test-backup";
 const backupJsonBackupPath = "activity-backup.json.test-backup";
+const summaryMarkdownBackupPath = "activity-summary.md.test-backup";
 
 function run(args) {
   return execFileSync(node, ["index.js", ...args], {
@@ -55,6 +57,7 @@ function restore(path, backupPath) {
 backup(dataPath, dataBackupPath);
 backup(csvPath, csvBackupPath);
 backup(backupJsonPath, backupJsonBackupPath);
+backup(summaryMarkdownPath, summaryMarkdownBackupPath);
 
 try {
   for (const check of checks) {
@@ -83,6 +86,11 @@ try {
   const restoreOutput = run(["--restore-json"]);
   if (!restoreOutput.includes("Restored")) {
     throw new Error("Expected JSON restore to complete");
+  }
+
+  const summaryMarkdownOutput = run(["--summary-md"]);
+  if (!summaryMarkdownOutput.includes("Exported activity-summary.md")) {
+    throw new Error("Expected Markdown summary export to complete");
   }
 
   writeFileSync(
@@ -235,4 +243,5 @@ try {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
   restore(backupJsonPath, backupJsonBackupPath);
+  restore(summaryMarkdownPath, summaryMarkdownBackupPath);
 }
