@@ -169,6 +169,11 @@ try {
     throw new Error("Expected recent list to include tags");
   }
 
+  const weekOutput = run(["--list", "--week"]);
+  if (!weekOutput.includes("Tagged test entry") || weekOutput.includes("Older activity entry")) {
+    throw new Error("Expected week filter to include only current-week entries");
+  }
+
   const latestOutput = run(["--latest"]);
   if (!latestOutput.includes("Tagged test entry") || !latestOutput.includes("#work")) {
     throw new Error("Expected latest command to show the newest tagged entry");
@@ -238,7 +243,7 @@ try {
     }
   }
 
-  console.log(`Passed ${checks.length + 25} CLI checks`);
+  console.log(`Passed ${checks.length + 26} CLI checks`);
 } finally {
   restore(dataPath, dataBackupPath);
   restore(csvPath, csvBackupPath);
