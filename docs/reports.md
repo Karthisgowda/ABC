@@ -24,6 +24,9 @@ import restores those tags when the column is present.
 Most activity reports accept `--since=YYYY-MM-DD` and `--until=YYYY-MM-DD` to
 limit output to a date range before exporting or summarizing data.
 
+Activity reports also accept repeated `--tag=...` filters. When multiple tags
+are provided, entries must include all requested tags.
+
 ## Grid Reports
 
 - `contribution-grid.csv` contains one row per grid box.

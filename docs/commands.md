@@ -8,6 +8,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run log -- "message" --tag=work` records an entry with one or more tags.
 - `npm run list` prints all entries.
 - `npm run list -- --since=YYYY-MM-DD --until=YYYY-MM-DD` filters entries by date.
+- `npm run list -- --tag=work` filters entries by tag.
 - `npm run search -- --search=term` searches activity messages.
 - Search also matches tags.
 - `npm run days` groups entries by date.
@@ -19,6 +20,7 @@ ABC exposes a small set of CLI commands through `index.js` and npm scripts.
 - `npm run backup-json` writes `activity-backup.json`.
 - `npm run stats` prints activity totals.
 - `npm run stats -- --since=YYYY-MM-DD` prints totals for a date range.
+- `npm run stats -- --tag=work` prints totals for a tag.
 - `npm run dashboard` writes a local `dashboard.html` preview.
 - `npm run export-csv` writes `activity-log.csv`.
 - `npm run import-csv` merges entries from `activity-log.csv` into `data.json`.
